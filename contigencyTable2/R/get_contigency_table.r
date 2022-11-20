@@ -1381,3 +1381,100 @@ names(res) = c("package_name", "Version")
 return(res)
 }else return("this package is not installed")
 }
+
+
+
+
+#' This function is designed to implement Fisher's algorithm for exact testing in a 2x2 contigency table. 
+#' Although the \code{\link[stats:fisher.test]{stats::fisher.test()}} function is a 
+#' very fast and good function, this function is also suitable.
+#' 
+#' 
+#' @usage \code{h_fisher(tab, alternative = "two-sided")}
+#' @param tab contigency table \deqn{2 \times 2}
+#' @param alternative argumment that can take 3 value ("two-sided", "less", "greater")
+#' @return a vector with two element \code{"p-value", "p-table"} that, \code{"p-value" is} \deqn{p_{value}} of test and
+#'     \code{p-table} is probablity of original table.
+#'  
+#' @examples 
+#' \dontrun{tab2 <- matrix(c(1, 9, 11, 3), 2, 2,
+#'     byrow = T)
+#'     h_fisher(tab2, alternative = "two-sided")}
+#' @export
+h_fisher <- function(tab, alternative = "two-sided"){
+    n11 <- tab[1, 1]
+    n12 <- tab[1, 2]
+    n21 <- tab[2, 1]
+    n22 <- tab[2, 2]
+    prob_tab <- dhyper(n11, n11 + n12, n21 + n22, n11 + n21)
+    Mat_list1 <- list()
+    for(k in 0:(n11 + n21)){
+        Mat_list1[[k + 1]] <- matrix(c(k, n21 + n11 - k, n12 + n11 - k, n22 - n11 + k), 
+        2, 2)
+    }
+
+
+### two-sided
+get_proper_mat_two_sided <- function(M){
+    indicate <- FALSE
+    res_val1 <- sum(M < 0)
+    if(!res_val1) {
+        prob <- dhyper(M[1, 1], M[1, 1] + M[1, 2], M[2, 1] + M[2, 2],
+         M[1, 1] + M[2, 1])
+         if(prob <= prob_tab) indicate <- TRUE
+    }
+    return(indicate)
+}
+ind_proper_two_sided <- unlist(lapply(Mat_list1, get_proper_mat_two_sided))
+ind_proper_two_sided <- which(ind_proper_two_sided)
+proper_mat_two_sided <- Mat_list1[ind_proper_two_sided]
+
+
+
+### less
+
+get_proper_mat_less <- function(M){
+    indicate <- FALSE
+    res_val1 <- sum(M < 0)
+    if(!res_val1) {
+        if(M[1, 1] <= n11) indicate <- TRUE
+    }
+    return(indicate)
+}
+ind_proper_less <- unlist(lapply(Mat_list1, get_proper_mat_less))
+ind_proper_less <- which(ind_proper_less)
+proper_mat_less <- Mat_list1[ind_proper_less]
+
+### greater
+
+get_proper_mat_greater <- function(M){
+    indicate <- FALSE
+    res_val1 <- sum(M < 0)
+    if(!res_val1) {
+        if(M[1, 1] >= n11) indicate <- TRUE
+    }
+    return(indicate)
+}
+ind_proper_greater <- unlist(lapply(Mat_list1, get_proper_mat_greater))
+ind_proper_greater <- which(ind_proper_greater)
+proper_mat_greater <- Mat_list1[ind_proper_greater]
+
+
+Mat_final <- switch(alternative, 
+"two-sided" = proper_mat_two_sided, 
+"less" = proper_mat_less, 
+proper_mat_greater)
+
+get_pval <- function(M){
+    mm <- n11 + n12
+    nn <- n21 + n22
+    a <- M[1, 1]
+    b <- M[2, 1]
+    k <- a + b
+    return(dhyper(a, mm, nn, k))
+}
+pval_total <- unlist(lapply(Mat_final, get_pval))
+
+return(c("p-value" = round(sum(pval_total), 4), 
+"p-table" = round(prob_tab, 4)))
+}

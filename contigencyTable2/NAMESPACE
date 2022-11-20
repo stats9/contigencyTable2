@@ -3,6 +3,7 @@
 export(check_package)
 export(create_dat_two)
 export(get_contigency_result)
+export(h_fisher)
 export(homogenity_test_or)
 export(lambda_coef_contigency)
 export(list_to_dataframe)
