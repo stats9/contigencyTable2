@@ -1327,5 +1327,5 @@ confront_var = "age"){
 #' @keywords datasets
 #' @name table_1
 #' @usage data(table_1)
-#' @format contigency table with 3 variables
+#' @format A table with 3 variables
 "table_1"
