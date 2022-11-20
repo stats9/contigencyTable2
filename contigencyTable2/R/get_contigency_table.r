@@ -1226,7 +1226,8 @@ return(list(Result = result, Table = table_unc))
 
 
 #' this function created for get mantel-haenszel and test homogenty of OR 
-#' @import import
+#' 
+#' 
 #' @importFrom magrittr %>% 
 #' @usage \code{homogenity_test_or(x, partial_oddsratio_method = "wald",
 #'     confront_var = "age")}
@@ -1238,7 +1239,7 @@ return(list(Result = result, Table = table_unc))
 #' @return test_result resut results
 #' @return  tabe_test t table 
 #' @examples 
-#' \dontrun{homogenity_test_or <- function(x, partial_oddsratio_method = "wald", confront_var = "age")}
+#' \dontrun{homogenity_test_or(x, partial_oddsratio_method = "wald", confront_var = "age")}
 #' @export
 homogenity_test_or <- function(x, partial_oddsratio_method = "wald", 
 confront_var = "age"){
@@ -1273,9 +1274,9 @@ confront_var = "age"){
 
 
     ######## get test_result
-    test_mantel <- mantelhaen.test(dat)
-    test_bres <- DescTools :: BreslowDayTest(dat)
-    vcd :: woolf_test(dat) -> test_woolf
+    test_mantel <- mantelhaen.test(x)
+    test_bres <- DescTools :: BreslowDayTest(x)
+    vcd :: woolf_test(x) -> test_woolf
     mat_test <- matrix(NA, 3, 2)
 
     MH_res <- c(test_mantel$statistic, test_mantel$p.value) %>% round(4)
@@ -1330,3 +1331,53 @@ confront_var = "age"){
 #' @format contigency table with 3 variables
 "table_1"
 
+
+#' this function created for convert a list to dataframe, List members must be vectors with equal number of members.
+#' 
+#' 
+#' @usage \code{list_to_dataframe(mylist)}
+#' @param list a list; List members must be vectors with equal number of members
+#' @return a dataframe, A dataframe whose columns are members of the input list.
+#' @examples 
+#' \dontrun{list_to_dataframe(mylist)}
+#' @export
+list_to_dataframe <- function(List){
+List <- xbar1
+Nam <- names(List)
+n <- length(List)
+N <- lengths(List)
+unique(N) -> nn
+if(length(nn) != 1) stop("every member of list most be same size")
+Array <- matrix(NA, nn, n)
+for(i in 1:n){
+    Array[, i] <- List[[i]]
+}
+Nam2 <- names(List[[1]])
+dimnames(Array) <- list(Nam2, Nam)
+as.data.frame(Array) -> res
+return(res)
+}
+
+
+
+#' This function is prepared to check whether the package is installed by entering the name of a package as a string.
+#' 
+#' 
+#' @usage \code{check_package("name of package")}
+#' @param pak name of package as string format
+#' @return return a string ("this package is not installed") or a vector with two element, name and version of vector 
+#' @examples 
+#' \dontrun{check_package("my package name")}
+#' @export
+check_package <- function(pak){
+my_paks <- installed.packages()
+paks <- my_paks[, 1]
+if(pak %in% paks){
+version_paks <- my_paks[, 3]
+ind <- which(paks == pak)
+res = c(paks[ind], version_paks[ind])
+names(res) = NULL
+names(res) = c("package_name", "Version")
+return(res)
+}else return("this package is not installed")
+}

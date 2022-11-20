@@ -1,6 +1,6 @@
 Package: contigencyTable2
 Title: Create complete tables to show  statistics of contigency 2x2 tables.
-Version: 1.1
+Version: 1.2
 Authors@R: 
     person("habib", "ezatabadi", , "habibezati88@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
@@ -14,6 +14,9 @@ imports:
        htmltools,
        kableExtra,
        vcd,
-       Hmisc
+       Hmisc,
+      import,
+      tibble,
+      magrittr
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.2

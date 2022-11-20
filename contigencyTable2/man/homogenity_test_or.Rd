@@ -26,5 +26,5 @@ tabe_test t table
 this function created for get mantel-haenszel and test homogenty of OR
 }
 \examples{
-\dontrun{homogenity_test_or <- function(x, partial_oddsratio_method = "wald", confront_var = "age")}
+\dontrun{homogenity_test_or(x, partial_oddsratio_method = "wald", confront_var = "age")}
 }
