@@ -11,28 +11,28 @@ contigency table}
     show_table_result = TRUE))}
 }
 \arguments{
-\item{n11}{@seealso \code{\link{get_contigency_result}}}
+\item{n11}{seealso \code{\link{get_contigency_result}}}
 
-\item{n12}{@seealso \code{\link{get_contigency_result}}}
+\item{n12}{see also \code{\link{get_contigency_result}}}
 
-\item{n21}{@seealso \code{\link{get_contigency_result}}}
+\item{n21}{see also \code{\link{get_contigency_result}}}
 
-\item{n22}{@seealso \code{\link{get_contigency_result}}}
+\item{n22}{see also \code{\link{get_contigency_result}}}
 
-\item{varname1}{@seealso \code{\link{get_contigency_result}}}
+\item{varname1}{see also \code{\link{get_contigency_result}}}
 
-\item{varname2}{@seealso \code{\link{get_contigency_result}}}
+\item{varname2}{see also \code{\link{get_contigency_result}}}
 
-\item{levels_var1}{@seealso \code{\link{get_contigency_result}}}
+\item{levels_var1}{see also \code{\link{get_contigency_result}}}
 
-\item{levels_var2}{@seealso \code{\link{get_contigency_result}}}
+\item{levels_var2}{see also \code{\link{get_contigency_result}}}
 
 \item{method}{The odds ratio estimation method has three state \code{`"midp"`, 
 `"wald"`, `"exact"`}}
 
 \item{conf_level}{level of confidence Interval}
 
-\item{show_table_result}{@seealso \code{\link{get_contigency_result}}}
+\item{show_table_result}{see also \code{\link{get_contigency_result}}}
 }
 \value{
 two table of oddsratio results, a html table and a r table

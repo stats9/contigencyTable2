@@ -1328,4 +1328,8 @@ confront_var = "age"){
 #' @name table_1
 #' @usage data(table_1)
 #' @format contigency table with 3 variables
+<<<<<<< HEAD
 NULL
+=======
+"table_1"
+>>>>>>> 205ab4bfb001ce3177e79c003beb718043e60387

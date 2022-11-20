@@ -2,7 +2,10 @@
 
 export(create_dat_two)
 export(get_contigency_result)
+export(homogenity_test_or)
 export(lambda_coef_contigency)
 export(odr)
 export(rr)
 export(uncertainty_get)
+import(import)
+importFrom(magrittr,"%>%")
