@@ -1,12 +1,13 @@
 Package: contigencyTable2
 Title: Create complete tables to show  statistics of contigency 2x2 tables.
-Version: 0.0.0.9000
+Version: 1.1
 Authors@R: 
     person("habib", "ezatabadi", , "habibezati88@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: Visualization of contigency table 2x2
 License: `use_mit_license()`
 Encoding: UTF-8
+LazyData: true
 imports:
        epitools,
        DescTools,
@@ -15,4 +16,4 @@ imports:
        vcd,
        Hmisc
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.2

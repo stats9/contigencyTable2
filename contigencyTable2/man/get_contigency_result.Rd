@@ -4,7 +4,10 @@
 \alias{get_contigency_result}
 \title{Function to create a complete table results for contigency table}
 \usage{
-get_contigency_result(n11, n12, n21, n22,
+\code{get_contigency_result(n11, n12, n21, n22,
+    varname1 = "Expose", varname2 = "Disease",
+    levels_var1 = c("Exposed", "UnExposed"), 
+    levels_var2 = c("Disease", "UnDisease"), show_table_results = TRUE)}
 }
 \arguments{
 \item{n11}{The number that shows this is that the first

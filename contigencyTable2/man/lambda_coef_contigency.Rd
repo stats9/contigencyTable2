@@ -9,21 +9,21 @@
     "UnExposed"), levels_var2 = c("Dieseae", "UnDisease"))}
 }
 \arguments{
-\item{n11}{@seealso \code{\link{get_contigency_result}}}
+\item{n11}{see also \code{\link{get_contigency_result}}}
 
-\item{n12}{@seealso \code{\link{get_contigency_result}}}
+\item{n12}{see also \code{\link{get_contigency_result}}}
 
-\item{n21}{@seealso \code{\link{get_contigency_result}}}
+\item{n21}{see also \code{\link{get_contigency_result}}}
 
-\item{n22}{@seealso \code{\link{get_contigency_result}}}
+\item{n22}{see also \code{\link{get_contigency_result}}}
 
-\item{varname1}{@seealso \code{\link{get_contigency_result}}}
+\item{varname1}{see also \code{\link{get_contigency_result}}}
 
-\item{varname2}{@seealso \code{\link{get_contigency_result}}}
+\item{varname2}{see also \code{\link{get_contigency_result}}}
 
-\item{levels_var1}{@seealso \code{\link{get_contigency_result}}}
+\item{levels_var1}{see also \code{\link{get_contigency_result}}}
 
-\item{levels_var2}{@seealso \code{\link{get_contigency_result}}}
+\item{levels_var2}{see also \code{\link{get_contigency_result}}}
 }
 \value{
 table of lambda result, for more detail of what is lambda

@@ -1,9 +1,9 @@
 #' Function to create a complete table results for contigency table
 #' 
-#' @usage get_contigency_result(n11, n12, n21, n22, 
-#`     varname1 = "Expose", varname2 = "Disease",
-#`     levels_var1 = c("Exposed", "UnExposed"), 
-#`     levels_var2 = c("Disease", "UnDisease"), show_table_results = TRUE)
+#' @usage \code{get_contigency_result(n11, n12, n21, n22,
+#'     varname1 = "Expose", varname2 = "Disease",
+#'     levels_var1 = c("Exposed", "UnExposed"), 
+#'     levels_var2 = c("Disease", "UnDisease"), show_table_results = TRUE)}
 #' @param n11 The number that shows this is that the first 
 #' variable of the table is at its first level and the second 
 #' variable of the table is also at its first level
@@ -782,7 +782,7 @@ return(Total_result)
 
 #' create a function to create original data from a table 2x2 
 #' 
-#' @usage create_dat_two(tab, name1, name2)
+#' @usage \code{create_dat_two(tab, name1, name2)}
 #' @param tab contigency table 2x2
 #' @param name1 A string that name of first variable into table
 #' @param name2 A string that name of second variable into table
@@ -814,18 +814,18 @@ return(res)
 #'     levels_var1 = c("Exposed", "UnExposed"), levels_var2 = c("Disease", 
 #'     "UnDisease"), method = "wald", conf_level = 0.95, 
 #'     show_table_result = TRUE))}
-#' @param n11 @seealso \code{\link{get_contigency_result}}
-#' @param n12 @seealso \code{\link{get_contigency_result}}
-#' @param n21 @seealso \code{\link{get_contigency_result}}
-#' @param n22 @seealso \code{\link{get_contigency_result}}
-#' @param varname1 @seealso \code{\link{get_contigency_result}}
-#' @param varname2 @seealso \code{\link{get_contigency_result}}
-#' @param levels_var1 @seealso \code{\link{get_contigency_result}}
-#' @param levels_var2 @seealso \code{\link{get_contigency_result}}
+#' @param n11 seealso \code{\link{get_contigency_result}}
+#' @param n12 see also \code{\link{get_contigency_result}}
+#' @param n21 see also \code{\link{get_contigency_result}}
+#' @param n22 see also \code{\link{get_contigency_result}}
+#' @param varname1 see also \code{\link{get_contigency_result}}
+#' @param varname2 see also \code{\link{get_contigency_result}}
+#' @param levels_var1 see also \code{\link{get_contigency_result}}
+#' @param levels_var2 see also \code{\link{get_contigency_result}}
 #' @param method The odds ratio estimation method has three state \code{`"midp"`, 
 #'     `"wald"`, `"exact"`} 
 #' @param conf_level level of confidence Interval
-#' @param show_table_result @seealso \code{\link{get_contigency_result}}
+#' @param show_table_result see also \code{\link{get_contigency_result}}
 #' @return two table of oddsratio results, a html table and a r table
 #' @export 
 #' @examples 
@@ -937,14 +937,14 @@ return(Return_result)
 #'     varname2 = "Disease", levels_var1 = c("Exposed", 
 #'     "UnExposed"), levels_var2 = c("Disease", "UnDisease"), 
 #'     method = "wald", conf_level = 0.95)}
-#' @param n11 @seealso \code{\link{get_contigency_result}}
-#' @param n12 @seealso \code{\link{get_contigency_result}}
-#' @param n21 @seealso \code{\link{get_contigency_result}}
-#' @param n22 @seealso \code{\link{get_contigency_result}}
-#' @param varname1 @seealso \code{\link{get_contigency_result}}
-#' @param varname2 @seealso \code{\link{get_contigency_result}}
-#' @param levels_var1 @seealso \code{\link{get_contigency_result}}
-#' @param levels_var2 @seealso \code{\link{get_contigency_result}}
+#' @param n11 see also \code{\link{get_contigency_result}}
+#' @param n12 see also \code{\link{get_contigency_result}}
+#' @param n21 see also \code{\link{get_contigency_result}}
+#' @param n22 see also \code{\link{get_contigency_result}}
+#' @param varname1 see also \code{\link{get_contigency_result}}
+#' @param varname2 see also \code{\link{get_contigency_result}}
+#' @param levels_var1 see also \code{\link{get_contigency_result}}
+#' @param levels_var2 see also \code{\link{get_contigency_result}}
 #' @param method It has two modes, ‍‍‍`"wald"` and `"boot"`, which is the 
 #'     `"boot"` mode based on resampling.
 #' @param nboot when \code{method = "boot"} therefore nboot is number of
@@ -1068,14 +1068,14 @@ return(Return_result)
 #' @usage \code{lambda_coef_contigency(n11, n12, n21, n22, 
 #'     varname1 = "Expose", varname2 = "Disease", levels_var1 = c("Exposed", 
 #'     "UnExposed"), levels_var2 = c("Dieseae", "UnDisease"))}
-#' @param n11 @seealso \code{\link{get_contigency_result}}
-#' @param n12 @seealso \code{\link{get_contigency_result}}
-#' @param n21 @seealso \code{\link{get_contigency_result}}
-#' @param n22 @seealso \code{\link{get_contigency_result}}
-#' @param varname1 @seealso \code{\link{get_contigency_result}}
-#' @param varname2 @seealso \code{\link{get_contigency_result}}
-#' @param levels_var1 @seealso \code{\link{get_contigency_result}}
-#' @param levels_var2 @seealso \code{\link{get_contigency_result}}
+#' @param n11 see also \code{\link{get_contigency_result}}
+#' @param n12 see also \code{\link{get_contigency_result}}
+#' @param n21 see also \code{\link{get_contigency_result}}
+#' @param n22 see also \code{\link{get_contigency_result}}
+#' @param varname1 see also \code{\link{get_contigency_result}}
+#' @param varname2 see also \code{\link{get_contigency_result}}
+#' @param levels_var1 see also \code{\link{get_contigency_result}}
+#' @param levels_var2 see also \code{\link{get_contigency_result}}
 #' @return table of lambda result, for more detail of what is lambda 
 #'     \href{https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/procstat/procstat_freq_details115.htm}{SAS_help}
 #' @export
@@ -1150,14 +1150,14 @@ return(list(Result = result, Table = table_lam))
 #' @usage \code{uncerainty_get(n11, n12, n21, n22, 
 #'     varname1 = "Expose", varname2 = "Disease", levels_var1 = c("Exposed", 
 #'     "UnExposed"), levels_var2 = c("Dieseae", "UnDisease"))}
-#' @param n11 @seealso \code{\link{get_contigency_result}}
-#' @param n12 @seealso \code{\link{get_contigency_result}}
-#' @param n21 @seealso \code{\link{get_contigency_result}}
-#' @param n22 @seealso \code{\link{get_contigency_result}}
-#' @param varname1 @seealso \code{\link{get_contigency_result}}
-#' @param varname2 @seealso \code{\link{get_contigency_result}}
-#' @param levels_var1 @seealso \code{\link{get_contigency_result}}
-#' @param levels_var2 @seealso \code{\link{get_contigency_result}}
+#' @param n11 see also \code{\link{get_contigency_result}}
+#' @param n12 see also \code{\link{get_contigency_result}}
+#' @param n21 see also \code{\link{get_contigency_result}}
+#' @param n22 see also \code{\link{get_contigency_result}}
+#' @param varname1 see also \code{\link{get_contigency_result}}
+#' @param varname2 see also \code{\link{get_contigency_result}}
+#' @param levels_var1 see also \code{\link{get_contigency_result}}
+#' @param levels_var2 see also \code{\link{get_contigency_result}}
 #' @return table of uncertainty coefficienty results, 
 #'     for more detail of what is uncertainty coefficienty see 
 #'     \href{https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/procstat/procstat_freq_details115.htm}{SAS_help}
@@ -1225,8 +1225,107 @@ return(list(Result = result, Table = table_unc))
 }
 
 
+#' this function created for get mantel-haenszel and test homogenty of OR 
+#' @import import
+#' @importFrom magrittr %>% 
+#' @usage \code{homogenity_test_or(x, partial_oddsratio_method = "wald",
+#'     confront_var = "age")}
+#' @param x is array with atleast 3 dimension
+#' @param partial_oddsratio_method  method The odds ratio estimation method has three state \code{`"midp"`, 
+#' `"wald"`, `"exact"`} 
+#' @param confront_var confounding variable is factor variable
+#' @return odd_ratio_result result of oddratio into table
+#' @return test_result resut results
+#' @return  tabe_test t table 
+#' @examples 
+#' \dontrun{homogenity_test_or <- function(x, partial_oddsratio_method = "wald", confront_var = "age")}
+#' @export
+homogenity_test_or <- function(x, partial_oddsratio_method = "wald", 
+confront_var = "age"){
+    dim_res <- dim(x)
+    n <-dim_res[3]
+    Type <- partial_oddsratio_method
+    Partial_tabs <- list()
+    for(i in 1:n){
+        Partial_tabs[[i]] <- x[, , i]
+    }
+    odd_result <- matrix(NA, n, 3)
+    for(j in 1:n){
+        dati <- Partial_tabs[[j]]
+        odd_result[j, ] <- epitools :: oddsratio(dati, method = Type)$measure[2, ]
+    }
+    ## odd_result
+
+    Marginal_tab <- margin.table(x, c(1, 2))
+    odd_crude <- epitools :: oddsratio(Marginal_tab, method = Type)$measure[2, ]
+    test_mantel <- mantelhaen.test(x)
+    MH_odd_combined <- c(test_mantel$estimate, test_mantel$conf.int)
+    odd_result <- rbind(odd_result, odd_crude, MH_odd_combined) %>%
+    as.data.frame %>% setNames(c("statistic", "lower-band", "upper-band"))
+    rownames(odd_result) <- NULL
+    Nam <- c(paste0(paste0("level ", 1:n), paste0(" of ", confront_var)),
+     "Marginal OR", 
+    "MH OR")
+    odd_result <- odd_result %>%
+    dplyr :: mutate(varname = Nam) %>%
+    dplyr :: relocate("varname", .before = "statistic")
+    rownames(odd_result) <- NULL
+
+
+    ######## get test_result
+    test_mantel <- mantelhaen.test(dat)
+    test_bres <- DescTools :: BreslowDayTest(dat)
+    vcd :: woolf_test(dat) -> test_woolf
+    mat_test <- matrix(NA, 3, 2)
+
+    MH_res <- c(test_mantel$statistic, test_mantel$p.value) %>% round(4)
+    c(test_bres$statistic, test_bres$p.value) %>% round(4) -> Breslow_res
+    c(test_woolf$statistic, test_woolf$p.value) %>% round(4) -> woolf_res
+    h_test <- rbind(MH_res, Breslow_res, woolf_res) %>% 
+    as.data.frame %>% setNames(c("statistic", "p-value")) %>%
+    tibble :: rownames_to_column(var = "Method")
+    list_result <- list(oddratio_rsult = odd_result, test_result = h_test)
+
+    OR_table <- odd_result %>%
+    kableExtra :: kbl(caption = "OddsRatio Results", align = "c") %>%
+    kableExtra :: kable_paper("hover", full_width = F) %>%
+    kableExtra :: pack_rows(paste0("levels of ", confront_var), 1, n) %>%
+    kableExtra :: pack_rows("Marginal OR, Mantel-Haenszel OR", n+1, n+2) %>%
+        kableExtra :: column_spec(1, background = "green", 
+    color = "white", 
+    italic = T, bold = T) %>%
+    kableExtra :: row_spec(0, background = "green", 
+    color = "white", italic = T, bold = T)
+
+    test_table <- h_test %>%
+    kableExtra :: kbl(caption = "test Results", align = "c") %>%
+    kableExtra :: kable_paper("hover") %>%
+    kableExtra :: column_spec(1, background = "green", 
+    color = "white", 
+    italic = T, bold = T) %>%
+    kableExtra :: row_spec(0, background = "green", 
+    color = "white", italic = T, bold = T)
+    tables <- list(OR_table, test_table)
+    return(list(oddratio_rsult = odd_result, test_result = h_test, 
+    table_Oddsratio = OR_table, table_test = test_table))
+}
 
 
 
-
-
+#' table_1 contigency table with 3 variables
+#'
+#' A dataset containing a contigency table with 3 variable 
+#' The variables are as follows:
+#'
+#' \itemize{
+#'   \item exposure. The variable that shows how many were exposed, which is a binary variable with two levels of exposure (1) or no exposure (0).
+#'   \item Group. A binary variable that is leveled at the level of the treated group (1) and the control group (0).
+#' \item age. A categorical variable, which is divided into three levels: 1, 2, and 3.
+#' }
+#'
+#' @docType data
+#' @keywords datasets
+#' @name table_1
+#' @usage data(table_1)
+#' @format contigency table with 3 variables
+"table_1"
