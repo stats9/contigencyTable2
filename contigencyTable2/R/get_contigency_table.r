@@ -1613,23 +1613,28 @@ varnames = c("Var1", "Var2")){
 #'
 #' @details for calculate test statistics values, we use this formulas:
 #' \deqn{
-#'     \begin{align}
-#'     & \text{Contigency Table} = \left[\begin{array}{c|c|c|c}n_{(1, ~1)} & n_{(1,~2)} & \cdots & n_{(1,~J)}\\
+#' \text{Contigency Table} = \left[\begin{array}{c|c|c|c}n_{(1, ~1)} & n_{(1,~2)} & \cdots & n_{(1,~J)}\\
 #'     n_{(2, ~1)} & n_{(2, ~2)} & \cdots & n_{(2, ~J)} \\
 #'     \vdots & \ddots & \ddots & \vdots \\
-#'     n_{(I, ~1)} & n_{(2, ~2)} & \cdots & n_{(I, ~J)}\end{array}\right]\\
-#'     & \Lambda = \frac{\prod_i \prod_j(n_{i+}\times n_{+j})^{n_{ij}}}{n \prod_i\prod_j n_{ij}^{n_{ij}}}\\
-#'     & G^2 = -2\log(\Lambda) = 2\sum_i\sum_j n_{ij}\log\left(\frac{n_{ij}}{\hat{\mu}_{ij}}\right)\\
-#'     & \hat{\mu}_{ij} = \frac{n_{i+} \times n_{+j}}{n}\\
-#'     & \underset{\text{If}~ H_0 ~ \text{is TRUE}}{G^2} \approx \chi^2_{(I-1)\times (J-1)}\\
-#'     & \chi^2_{\text{pearson}} = \sum_{i = 1}^I\sum_{j = 1}^J\frac{(n_{(i, ~j)}-\hat{\lambda}_{(i, ~j))})^2}{\hat{\lambda}_{(i, ~j))}}\\
-#'     & \underset{\text{If}~ H_0 ~ \text{is TRUE}}{\chi^2_{(\text{pearson})}} \approx \chi^2_{(I-1)\times (J-1)}\\
-#'     & \text{Trend Test Statistics} = M^2 = r^2 \times (n-1)\\
-#'     & \underset{\text{If} ~H_0 ~ \text{Is TRUE}}{M^2} \approx \chi^2_{(1)} \\
-#'     & n = \sum_{i =1}^I\sum_{j=1}^J n_{(i, ~j)}, \\
-#'     & r = \text{Corr}(X_1, ~X_2), \quad X_1, ~ X_2 ~\text{Are two variables of contigency table}
-#'     \end{align}
-#' }
+#'     n_{(I, ~1)} & n_{(2, ~2)} & \cdots & n_{(I, ~J)}\end{array}\right]}
+#' \deqn{
+#' \Lambda = \frac{\prod_i \prod_j(n_{i+}\times n_{+j})^{n_{ij}}}{n \prod_i\prod_j n_{ij}^{n_{ij}}}}
+#' \deqn{
+#'  G^2 = -2\log(\Lambda) = 2\sum_i\sum_j n_{ij}\log\left(\frac{n_{ij}}{\hat{\mu}_{ij}}\right)}
+#' \deqn{
+#'  \hat{\mu}_{ij} = \frac{n_{i+} \times n_{+j}}{n}}
+#' \deqn{
+#' \underset{\text{If}~ H_0 ~ \text{is TRUE}}{G^2} \approx \chi^2_{(I-1)\times (J-1)}}
+#' \deqn{
+#' \chi^2_{\text{pearson}} = \sum_{i = 1}^I\sum_{j = 1}^J\frac{(n_{(i, ~j)}-\hat{\lambda}_{(i, ~j))})^2}{\hat{\lambda}_{(i, ~j))}}}
+#' \deqn{
+#' \underset{\text{If}~ H_0 ~ \text{is TRUE}}{\chi^2_{(\text{pearson})}} \approx \chi^2_{(I-1)\times (J-1)}}
+#' \deqn{
+#' \text{Trend Test Statistics} = M^2 = r^2 \times (n-1)}
+#' \deqn{\underset{\text{If} ~H_0 ~ \text{Is TRUE}}{M^2} \approx \chi^2_{(1)}}
+#' \deqn{n = \sum_{i =1}^I\sum_{j=1}^J n_{(i, ~j)},}
+#' \deqn{r = \text{Corr}(X_1, ~X_2), \quad X_1, ~ X_2 ~\text{Are two variables of contigency table}}
+#' 
 #' @examples 
 #' \dontrun{data(table_2)
 #'     Table_Test_Result(tab = table_2)}
@@ -1708,15 +1713,15 @@ Table_Test_Result <- function(tab, Levels, idLevel = 0){
     kableExtra :: footnote(general = Foot_note1,
            number = c("if pvalue cell is red, means that p-value < 0.05"),
            ) %>%
-           group_rows(group_label = "ORIGINAL TABLE", 
+    kableExtra :: group_rows(group_label = "ORIGINAL TABLE", 
            start_row = 1, end_row = (n1 + 2), 
            label_row_css = "border-top: 3px solid;", italic = TRUE, 
            color = "#d48a00") %>%
-           group_rows(group_label = "EXPECTED TABLE", 
+    kableExtra :: group_rows(group_label = "EXPECTED TABLE", 
            start_row = (n1 + 3), end_row = (2 * n1 + 4), 
            label_row_css = "border-top: 3px solid;", italic = TRUE,
            color = "#d48a00") %>%
-           group_rows(group_label = "TEST RESULTS", 
+    kableExtra :: group_rows(group_label = "TEST RESULTS", 
            start_row = (2*n1 + 5), end_row = (2*n1 + 8), 
            label_row_css = "border-top: 3px solid;", italic = TRUE, 
            color = "#d48a00") -> Table_result
