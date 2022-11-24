@@ -2,7 +2,8 @@
 % Please edit documentation in R/get_contigency_table.r
 \name{list_to_dataframe}
 \alias{list_to_dataframe}
-\title{this function created for convert a list to dataframe, List members must be vectors with equal number of members.}
+\title{this function created for convert a list to dataframe,
+List members must be vectors with equal number of members.}
 \usage{
 \code{list_to_dataframe(mylist)}
 }
@@ -13,7 +14,8 @@
 a dataframe, A dataframe whose columns are members of the input list.
 }
 \description{
-this function created for convert a list to dataframe, List members must be vectors with equal number of members.
+this function created for convert a list to dataframe,
+List members must be vectors with equal number of members.
 }
 \examples{
 \dontrun{list_to_dataframe(mylist)}

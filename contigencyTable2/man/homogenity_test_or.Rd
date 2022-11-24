@@ -8,15 +8,15 @@
     confront_var = "age")}
 }
 \arguments{
-\item{x}{is array with atleast 3 dimension}
+\item{x}{is array with Atleast 3 dimension}
 
-\item{partial_oddsratio_method}{method The odds ratio estimation method has three state \code{`"midp"`, 
-`"wald"`, `"exact"`}}
+\item{partial_oddsratio_method}{method The odds ratio estimation method has three state \code{"midp", 
+"wald", "exact"}}
 
-\item{confront_var}{confounding variable is factor variable}
+\item{confront_var}{confounding variable is A factor variable}
 }
 \value{
-odd_ratio_result result of oddratio into table
+odd_ratio_result result
 
 test_result resut results
 

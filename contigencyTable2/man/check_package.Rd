@@ -2,7 +2,8 @@
 % Please edit documentation in R/get_contigency_table.r
 \name{check_package}
 \alias{check_package}
-\title{This function is prepared to check whether the package is installed by entering the name of a package as a string.}
+\title{This function is prepared to check whether the package is installed by
+entering the name of a package as a string.}
 \usage{
 \code{check_package("name of package")}
 }
@@ -13,7 +14,8 @@
 return a string ("this package is not installed") or a vector with two element, name and version of vector
 }
 \description{
-This function is prepared to check whether the package is installed by entering the name of a package as a string.
+This function is prepared to check whether the package is installed by
+entering the name of a package as a string.
 }
 \examples{
 \dontrun{check_package("my package name")}

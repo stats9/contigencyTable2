@@ -16,9 +16,11 @@ The variables are as follows:
 }
 \details{
 \itemize{
-\item exposure. The variable that shows how many were exposed, which is a binary variable with two levels of exposure (1) or no exposure (0).
-\item Group. A binary variable that is leveled at the level of the treated group (1) and the control group (0).
-\item age. A categorical variable, which is divided into three levels: 1, 2, and 3.
+\item exposure: The variable that shows how many were exposed,
+which is a binary variable with two levels of exposure (1) or no exposure (0).
+\item Group: A binary variable that is leveled at the level of
+the treated group (1) and the control group (0).
+\item age: A categorical variable, which is divided into three levels: 1, 2, and 3.
 }
 }
 \keyword{datasets}

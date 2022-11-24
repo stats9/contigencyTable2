@@ -1169,7 +1169,7 @@ uncertainty_get <- function(n11, n12, n21, n22,
 varname1 = "Expose", varname2 = "Diseasee", levels_var1 = c("Exposed", 
 "UnExposed"), levels_var2 = c("Disease", "UnDisease")){
 
-# introduction prepare data
+# prepare data
 
 dat <- matrix(c(n11, n21, n12, n22), 2, 2) 
 dimnames(dat) <- list(rows = levels_var1,
@@ -1231,13 +1231,13 @@ return(list(Result = result, Table = table_unc))
 #' @importFrom magrittr %>% 
 #' @usage \code{homogenity_test_or(x, partial_oddsratio_method = "wald",
 #'     confront_var = "age")}
-#' @param x is array with atleast 3 dimension
-#' @param partial_oddsratio_method  method The odds ratio estimation method has three state \code{`"midp"`, 
-#' `"wald"`, `"exact"`} 
-#' @param confront_var confounding variable is factor variable
-#' @return odd_ratio_result result of oddratio into table
+#' @param x is array with Atleast 3 dimension
+#' @param partial_oddsratio_method  method The odds ratio estimation method has three state \code{"midp", 
+#' "wald", "exact"} 
+#' @param confront_var confounding variable is A factor variable
+#' @return odd_ratio_result result 
 #' @return test_result resut results
-#' @return  tabe_test t table 
+#' @return tabe_test t table 
 #' @examples 
 #' \dontrun{homogenity_test_or(x, partial_oddsratio_method = "wald", confront_var = "age")}
 #' @export
@@ -1319,10 +1319,12 @@ confront_var = "age"){
 #' The variables are as follows:
 #'
 #' \itemize{
-#'   \item exposure. The variable that shows how many were exposed, which is a binary variable with two levels of exposure (1) or no exposure (0).
-#'   \item Group. A binary variable that is leveled at the level of the treated group (1) and the control group (0).
-#' \item age. A categorical variable, which is divided into three levels: 1, 2, and 3.
-#' }
+#'     \item exposure: The variable that shows how many were exposed, 
+#'         which is a binary variable with two levels of exposure (1) or no exposure (0).
+#'     \item Group: A binary variable that is leveled at the level of 
+#'         the treated group (1) and the control group (0).
+#'     \item age: A categorical variable, which is divided into three levels: 1, 2, and 3.
+#'}
 #'
 #' @docType data
 #' @keywords datasets
@@ -1332,7 +1334,8 @@ confront_var = "age"){
 "table_1"
 
 
-#' this function created for convert a list to dataframe, List members must be vectors with equal number of members.
+#' this function created for convert a list to dataframe, 
+#'     List members must be vectors with equal number of members.
 #' 
 #' 
 #' @usage \code{list_to_dataframe(mylist)}
@@ -1360,7 +1363,8 @@ return(res)
 
 
 
-#' This function is prepared to check whether the package is installed by entering the name of a package as a string.
+#' This function is prepared to check whether the package is installed by 
+#'     entering the name of a package as a string.
 #' 
 #' 
 #' @usage \code{check_package("name of package")}
@@ -1402,6 +1406,7 @@ return(res)
 #'     h_fisher(tab2, alternative = "two-sided")}
 #' @export
 h_fisher <- function(tab, alternative = "two-sided"){
+    tab <- table_2
     n11 <- tab[1, 1]
     n12 <- tab[1, 2]
     n21 <- tab[2, 1]
@@ -1474,7 +1479,273 @@ get_pval <- function(M){
     return(dhyper(a, mm, nn, k))
 }
 pval_total <- unlist(lapply(Mat_final, get_pval))
+data.frame("p-vlaue" = round(sum(pval_total), 4), "prob-table" = round(sum(pval_total), 4)) -> result_
+result_2 <- result_
+result_2$p.vlaue <- kableExtra :: cell_spec(result_2$p.vlaue, 
+background = ifelse(result_2$p.vlaue > 0.05, "green", "red"), color = "white", bold = T)
+result_2 %>%
+kableExtra :: kbl(caption = "Table of Fisher Test for Contigency Table 2x2", escape = F) %>%
+kableExtra :: kable_paper("hover", full_width = F) %>%
+kableExtra :: row_spec(0, background = "green", color = "white", bold = T, italic = T) %>%
+kableExtra :: footnote(general = "if pvalue cell is red, means that p-value < 0.05") -> table_result
+return(list(results = result_, table_result = table_result))
+}
 
-return(c("p-value" = round(sum(pval_total), 4), 
-"p-table" = round(prob_tab, 4)))
+
+
+
+
+
+
+#' This function is designed so that, according to the user's request, 
+#' from an Contigency table based on two variables, 
+#' a data set with type; Create a matrix or dataframe or list.
+#' 
+#' 
+#' @usage \code{get_dat_from_tab(tab, Levels = NULL , idLevel = 0, data_type = "Matrix", 
+#'     varnames = c("Var1", "Var2"))}
+#' @param tab contigency table based on Two Variables.
+#' @param Levels A list with two members, the first member of the variable levels 
+#'     that is distributed in the rows of the contigency 
+#'     table and the second Member in its columns, 
+#'     the default value is NULL. And level two and ... for two variables.
+#' @param idLevel indicator variable, if the \code{Levels} argument is entered, 
+#'     this argument must take the value 1, otherwise 0.
+#' @param data_type According to the user's request, if you want the format of 
+#'     the output data to be in the form of a matrix, 
+#'     the value of the \code{"Matrix"} is entered, for 
+#'     the dataframe, \code{"dataframe"} and for the list entered \code{"list"}.
+#' @param varnames A vector with two members, which are the names of the 
+#'     first variable (the variable whose levels are distributed in the 
+#'     rows of the contigency table) and the second.
+#' @return The output is a list with two members, input table (\code{original_table}) and dataset (\code{Data}).
+#'  
+#' @examples 
+#' \dontrun{data(table_2)
+#'     get_dat_from_tab(tab = table_2, data_type = "dataframe")}
+#' @export
+get_dat_from_tab <- function(tab, Levels = NULL, idLevel = 0, data_type = "Matrix", 
+varnames = c("Var1", "Var2")){
+    n1 <- nrow(tab)
+    n2 <- ncol(tab)
+    n <- sum(tab)
+    N1 <- rowSums(tab)
+    N2 <- colSums(tab)
+    f1 <- function(x) {
+        dimnames(x) = list(1:n, varnames)
+        return(x)
+    }
+    f2 <- function(x) {
+        names(x) <- varnames
+        return(x)
+    }
+
+    if(idLevel){
+        lev_1 <- Levels[[1]]
+        lev_2 <- Levels[[2]]
+        x1 <- rep(lev_1, N1)
+        x2 <- rep(rep(lev_2, times = n1), times = as.vector(t(tab)))
+        dat1 <- cbind(x1, x2)
+        dat2 <- data.frame(x1, x2)
+        dat3 <- list(x1, x2)
+        Dat <- switch(data_type, 
+        "Matrix" = dat1, 
+        "dataframe" = dat2, 
+        dat3) 
+        Dat <- switch(data_type, 
+        "Matrix" = f1(Dat), 
+        f2(Dat))
+        return(list(Data = Dat, original_table = tab))
+    }else{
+        x1 <- rep(1:n1, N1)
+        x2 <- rep(rep(1:n2, times = n1), times = as.vector(t(tab)))
+        dat1 <- cbind(x1, x2)
+        dat2 <- data.frame(x1, x2)
+        dat3 <- list(x1, x2)
+        Dat <- switch(data_type, 
+        "Matrix" = dat1, 
+        "dataframe" = dat2, 
+        dat3) 
+        Dat <- switch(data_type, 
+        "Matrix" = f1(Dat), 
+        f2(Dat))
+        return(list(Data = Dat, original_table = tab))
+}
+}
+
+
+
+
+#' R's builtin function for applying a condition on a vector at the same time is 
+#'     in the form that the return is the first value of the vector (\code{\link[base:ifelse]{base::ifelse()}). 
+#'     This function is designed to return a vector by applying a condition on a vector.
+#' 
+#' 
+#' @usage \code{IfElse(cond, x, y)}
+#' @param cond A logical value, that is TRUE or FALSE
+#' @param x if \code{cond == TRUE} return \code{x}
+#' @param y if \code{cond == FALSE} return \code{y}
+#' @return \code{x} or \code{y}
+#'  
+#' @examples 
+#' \dontrun{IfElse(TRUE, c(1, 2, 5), c(4, 1, 3))}
+#' @export
+IfElse <- function(cond, x, y){
+    if(cond) return(x) else return(y)
+}
+
+
+
+#' table_2 contigency table with 2 variables
+#'
+#' A contigency table based on the number of case-control study for ovarian cancer patients 
+#'     and its association with contraceptive use and duration of use.
+#'
+#' \itemize{
+#'     \item Disease: The variable that shows how many were Disease (case) on Not Disease (control), 
+#'        which is a binary variable with two levels of Disease (case) or Not Disease (control).
+#'    \item OC Duration time: How long the person in question has been using contraceptives.
+#'        which has 4 levels, no use (\code{None}), between 0 and 5 years of use (\code{0-5}), 
+#'        between 5 and 10 years of use (\code{50-10} and more than 10 years of use (\code{>10}).
+#' }
+#'
+#' @docType data
+#' @keywords datasets
+#' @name table_2
+#' @usage data(table_2)
+#' @format contigency table with 2 variables
+"table_2"
+
+
+#'This function has been prepared for the purpose of performing three valid tests to check the connection 
+#'     or non-connection of the columns and rows of a contigency table and to output the 
+#'     test statistics as well as the expected values of the table and to check whether 
+#'     the exact test should also be performed or not. bring.
+#' 
+#' 
+#' @usage \code{Table_Test_Result(tab, Levels, idLevel = 0)}
+#' @param tab contigency table with two variable, that any variable have I (I >= 2) levels.
+#' @param Levels see \code{\link{get_dat_from_tab}}
+#' @param idLevel see \code{\link{get_dat_from_tab}}
+#' @return 
+#'     \itemize{
+#'          \item ExpEcted_Vals: table of expected values of a contigency table (tab)
+#'          \item test_result: table of test results
+#'          \item Total_results: table of Total results (expected values, test resutls and input table)
+#'          \item table_results: html table for total results
+#'}
+#'
+#' @details for calculate test statistics values, we use this formulas:
+#'     \deqn{
+#'         \begin{align}
+#'         & \text{Contigency Table} = \left[\begin{array}{c|c|c|c}n_{(1, ~1)} & n_{(1,~2)} & \cdots & n_{(1,~J)}\\
+#'         n_{(2, ~1)} & n_{(2, ~2)} & \cdots & n_{(2, ~J)} \\
+#'         \vdots & \ddots & \ddots & \vdots \\
+#'         n_{(I, ~1)} & n_{(2, ~2)} & \cdots & n_{(I, ~J)}\end{array}\right]\\
+#'         & \Lambda = \frac{\prod_i \prod_j(n_{i+}\times n_{+j})^{n_{ij}}}{n \prod_i\prod_j n_{ij}^{n_{ij}}}\\
+#'         & G^2 = -2\log(\Lambda) = 2\sum_i\sum_j n_{ij}\log\left(\frac{n_{ij}}{\hat{\mu}_{ij}}\right)\\
+#'         & \hat{\mu}_{ij} = \frac{n_{i+} \times n_{+j}}{n}\\
+#'         & \underset{\text{If}~ H_0 ~ \text{is TRUE}}{G^2} \approx \chi^2_{(I-1)\times (J-1)}\\
+#'         & \chi^2_{\text{pearson}} = \sum_{i = 1}^I\sum_{j = 1}^J\frac{(n_{(i, ~j)}-\hat{\lambda}_{(i, ~j))})^2}{\hat{\lambda}_{(i, ~j))}}\\
+#'         & \underset{\text{If}~ H_0 ~ \text{is TRUE}}{\chi^2_{(\text{pearson})}} \approx \chi^2_{(I-1)\times (J-1)}\\
+#'         & \text{Trend Test Statistics} = M^2 = r^2 \times (n-1)\\
+#'         & \underset{\text{If} ~H_0 ~ \text{Is TRUE}}{M^2} \approx \chi^2_{(1)} \\
+#'         & n = \sum_{i =1}^I\sum_{j=1}^J n_{(i, ~j)}, \\
+#'         & r = \text{Corr}(X_1, ~X_2), \quad X_1, ~ X_2 ~\text{Are two variables of contigency table}
+#'         \end{align}
+#' }
+#' @examples 
+#' \dontrun{data(table_2)
+#'     Table_Test_Result(tab = table_2)}
+#' @export
+Table_Test_Result <- function(tab, Levels, idLevel = 0){
+    n1 <- nrow(tab); n2 <- ncol(tab); n <- sum(tab)
+    N1 <- rowSums(tab); N2 <- colSums(tab)
+    Log_Lambda <- 0
+    lambda_hat <- outer(1:n1, 1:n2, function(i, j) N1[i] * N2[j] / n)
+    for(i in 1:n1){
+        for(j in 1:n2){
+            Log_Lambda <- Log_Lambda + 2 * tab[i, j] * log(ifelse(tab[i, j] == 0, .5, tab[i, j]) * n / (N1[i] * N2[j]))
+        }
+    }
+    chi_value <- sum((tab - lambda_hat)^2/lambda_hat)
+    Df <- (n1 - 1)  * (n2 - 1)
+    p_value_pearson <- pchisq(chi_value, df = Df, lower.tail = F)
+    p_value_likelihood_ratio <- pchisq(Log_Lambda, df = Df, lower.tail = F)
+
+
+    dat_tab <- get_dat_from_tab(tab)$Data
+    cor_r <- cor(dat_tab)[1, 2]
+    M2 <- cor_r^2 * (n - 1)
+    p_value_trend <- pchisq(M2, df = 1, lower.tail = F)
+    tab_res1 <- cbind(tab, N1)
+    tab_res2 <- rbind(tab_res1, c(N2, n))
+    row_0 <- c(IfElse(idLevel, Levels[[2]], paste("level", 1:n2, sep = "-")), "Total")
+    tab_res3 <- cbind(lambda_hat %>% round(4), rowSums(lambda_hat))
+    tab_res4 <- rbind(tab_res3, c(colSums(lambda_hat), n))
+    tab_res_5 <- rbind(row_0, tab_res4)
+    tab_final_1 <- rbind(row_0, tab_res2, tab_res_5)
+    col_0 <- rep(c("Levels", IfElse(idLevel, Levels[[1]], paste("level", 1:n1, sep = "-")), "Total"), 2)
+    tab_final_2 <- cbind(col_0, tab_final_1)
+    dimnames(tab_final_2) <- NULL
+    pval_3 <- c(p_value_pearson, p_value_likelihood_ratio, p_value_trend)
+    p_val_name <- c("Pearson-Chisquare", "Likelihood-Ratio", "Trend-Test(Linear-by-Linear)")
+    degree_free <- c(Df, Df, 1)
+    stat_value <- c(chi_value, Log_Lambda, M2)
+    test_result <- cbind(stat_value, degree_free, pval_3)
+    test_result2 <- cbind(p_val_name, test_result %>% round(4))
+    test_result3 <- cbind(test_result2, matrix("", 3, (n2-2)))
+    row0_test <- c("Method", "stat_value", "Df", "p-vlaue", rep("", n2 - 2))
+    test_result_final <- rbind(row0_test, test_result3, c("Total Observation", n, rep("", n2)))
+
+    Final_result <- rbind(tab_final_2, test_result_final)
+    dimnames(Final_result) <- NULL
+    Final_result <- data.frame(Final_result) %>% setNames(NULL)
+    Final_result2 <- Final_result
+    m1 <- nrow(Final_result)
+    j <- 0
+    for(i in (m1-3):(m1-1)){
+        j <- j + 1
+        Final_result2[i, 4] <- kableExtra :: cell_spec(Final_result2[i, 4],
+        background = IfElse(pval_3[j] > 0.05, 
+        "green", "red"), color = "white", 
+        bold = T)
+    }
+    for(k in (n1 + 4):(2*n1 + 3)){
+        for(h in 2:(n2 + 1)){
+            Final_result2[k, h] <- kableExtra :: cell_spec(Final_result2[k, h],
+            background = IfElse(as.numeric(Final_result2[k, h]) >= 5, 
+            "green", "red"), color = "white", 
+            bold = T)
+        }
+    }
+    ss <- sum(lambda_hat < 5)
+    percent_low <- ss/prod(dim(lambda_hat)) * 100
+    Foot_note1 <- sprintf("%d cells (%.2f %s) have expected count less than five. The Minimum expected count is %.2f", ss, percent_low, "%", min(lambda_hat))
+    Final_result2 %>%
+    kableExtra :: kbl(caption = "Table of Test Results for Contigency Table", escape = F) %>%
+    kableExtra :: kable_paper("hover") %>%
+    kableExtra :: row_spec(c(1, n1 + 3, 2*n1 + 5), background = "green", 
+    color = "white", italic = T, bold = T) %>%
+    kableExtra :: column_spec(1,
+    italic = T, bold = T, width = 1) %>%
+    kableExtra :: footnote(general = Foot_note1,
+           number = c("if pvalue cell is red, means that p-value < 0.05"),
+           ) %>%
+           group_rows(group_label = "ORIGINAL TABLE", 
+           start_row = 1, end_row = (n1 + 2), 
+           label_row_css = "border-top: 3px solid;", italic = TRUE, 
+           color = "#d48a00") %>%
+           group_rows(group_label = "EXPECTED TABLE", 
+           start_row = (n1 + 3), end_row = (2 * n1 + 4), 
+           label_row_css = "border-top: 3px solid;", italic = TRUE,
+           color = "#d48a00") %>%
+           group_rows(group_label = "TEST RESULTS", 
+           start_row = (2*n1 + 5), end_row = (2*n1 + 8), 
+           label_row_css = "border-top: 3px solid;", italic = TRUE, 
+           color = "#d48a00") -> Table_result
+    F_result <- list(ExpEcted_Vals = lambda_hat, 
+    test_result = test_result_final, Total_results = Final_result, 
+    original_table = tab, table_results = Table_result)
+    return(F_result)
 }
