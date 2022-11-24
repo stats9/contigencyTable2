@@ -1575,36 +1575,15 @@ varnames = c("Var1", "Var2")){
 
 
 
-
-#' R's builtin function for applying a condition on a vector at the same time is 
-#'     in the form that the return is the first value of the vector (\code{\link[base:ifelse]{base::ifelse()}). 
-#'     This function is designed to return a vector by applying a condition on a vector.
-#' 
-#' 
-#' @usage \code{IfElse(cond, x, y)}
-#' @param cond A logical value, that is TRUE or FALSE
-#' @param x if \code{cond == TRUE} return \code{x}
-#' @param y if \code{cond == FALSE} return \code{y}
-#' @return \code{x} or \code{y}
-#'  
-#' @examples 
-#' \dontrun{IfElse(TRUE, c(1, 2, 5), c(4, 1, 3))}
-#' @export
-IfElse <- function(cond, x, y){
-    if(cond) return(x) else return(y)
-}
-
-
-
 #' table_2 contigency table with 2 variables
 #'
 #' A contigency table based on the number of case-control study for ovarian cancer patients 
-#'     and its association with contraceptive use and duration of use.
+#' and its association with contraceptive use and duration of use.
 #'
 #' \itemize{
 #'     \item Disease: The variable that shows how many were Disease (case) on Not Disease (control), 
 #'        which is a binary variable with two levels of Disease (case) or Not Disease (control).
-#'    \item OC Duration time: How long the person in question has been using contraceptives.
+#'     \item OC Duration time: How long the person in question has been using contraceptives.
 #'        which has 4 levels, no use (\code{None}), between 0 and 5 years of use (\code{0-5}), 
 #'        between 5 and 10 years of use (\code{50-10} and more than 10 years of use (\code{>10}).
 #' }
@@ -1617,42 +1596,39 @@ IfElse <- function(cond, x, y){
 "table_2"
 
 
-#'This function has been prepared for the purpose of performing three valid tests to check the connection 
-#'     or non-connection of the columns and rows of a contigency table and to output the 
-#'     test statistics as well as the expected values of the table and to check whether 
-#'     the exact test should also be performed or not. bring.
+#' This function has been prepared for the purpose of performing three valid tests to check the connection 
+#' or non-connection of the columns and rows of a contigency table and to output the 
+#' test statistics as well as the expected values of the table and to check whether 
+#' the exact test should also be performed or not. bring.
 #' 
 #' 
 #' @usage \code{Table_Test_Result(tab, Levels, idLevel = 0)}
 #' @param tab contigency table with two variable, that any variable have I (I >= 2) levels.
 #' @param Levels see \code{\link{get_dat_from_tab}}
 #' @param idLevel see \code{\link{get_dat_from_tab}}
-#' @return 
-#'     \itemize{
-#'          \item ExpEcted_Vals: table of expected values of a contigency table (tab)
-#'          \item test_result: table of test results
-#'          \item Total_results: table of Total results (expected values, test resutls and input table)
-#'          \item table_results: html table for total results
-#'}
+#' @return ExpEcted_Vals table of expected values of a contigency table (tab)
+#' @return test_result table of test results
+#' @return Total_results table of Total results (expected values, test resutls and input table)
+#' @return table_results html table for total results
 #'
 #' @details for calculate test statistics values, we use this formulas:
-#'     \deqn{
-#'         \begin{align}
-#'         & \text{Contigency Table} = \left[\begin{array}{c|c|c|c}n_{(1, ~1)} & n_{(1,~2)} & \cdots & n_{(1,~J)}\\
-#'         n_{(2, ~1)} & n_{(2, ~2)} & \cdots & n_{(2, ~J)} \\
-#'         \vdots & \ddots & \ddots & \vdots \\
-#'         n_{(I, ~1)} & n_{(2, ~2)} & \cdots & n_{(I, ~J)}\end{array}\right]\\
-#'         & \Lambda = \frac{\prod_i \prod_j(n_{i+}\times n_{+j})^{n_{ij}}}{n \prod_i\prod_j n_{ij}^{n_{ij}}}\\
-#'         & G^2 = -2\log(\Lambda) = 2\sum_i\sum_j n_{ij}\log\left(\frac{n_{ij}}{\hat{\mu}_{ij}}\right)\\
-#'         & \hat{\mu}_{ij} = \frac{n_{i+} \times n_{+j}}{n}\\
-#'         & \underset{\text{If}~ H_0 ~ \text{is TRUE}}{G^2} \approx \chi^2_{(I-1)\times (J-1)}\\
-#'         & \chi^2_{\text{pearson}} = \sum_{i = 1}^I\sum_{j = 1}^J\frac{(n_{(i, ~j)}-\hat{\lambda}_{(i, ~j))})^2}{\hat{\lambda}_{(i, ~j))}}\\
-#'         & \underset{\text{If}~ H_0 ~ \text{is TRUE}}{\chi^2_{(\text{pearson})}} \approx \chi^2_{(I-1)\times (J-1)}\\
-#'         & \text{Trend Test Statistics} = M^2 = r^2 \times (n-1)\\
-#'         & \underset{\text{If} ~H_0 ~ \text{Is TRUE}}{M^2} \approx \chi^2_{(1)} \\
-#'         & n = \sum_{i =1}^I\sum_{j=1}^J n_{(i, ~j)}, \\
-#'         & r = \text{Corr}(X_1, ~X_2), \quad X_1, ~ X_2 ~\text{Are two variables of contigency table}
-#'         \end{align}
+#' \deqn{
+#'     \begin{align}
+#'     & \text{Contigency Table} = \left[\begin{array}{c|c|c|c}n_{(1, ~1)} & n_{(1,~2)} & \cdots & n_{(1,~J)}\\
+#'     n_{(2, ~1)} & n_{(2, ~2)} & \cdots & n_{(2, ~J)} \\
+#'     \vdots & \ddots & \ddots & \vdots \\
+#'     n_{(I, ~1)} & n_{(2, ~2)} & \cdots & n_{(I, ~J)}\end{array}\right]\\
+#'     & \Lambda = \frac{\prod_i \prod_j(n_{i+}\times n_{+j})^{n_{ij}}}{n \prod_i\prod_j n_{ij}^{n_{ij}}}\\
+#'     & G^2 = -2\log(\Lambda) = 2\sum_i\sum_j n_{ij}\log\left(\frac{n_{ij}}{\hat{\mu}_{ij}}\right)\\
+#'     & \hat{\mu}_{ij} = \frac{n_{i+} \times n_{+j}}{n}\\
+#'     & \underset{\text{If}~ H_0 ~ \text{is TRUE}}{G^2} \approx \chi^2_{(I-1)\times (J-1)}\\
+#'     & \chi^2_{\text{pearson}} = \sum_{i = 1}^I\sum_{j = 1}^J\frac{(n_{(i, ~j)}-\hat{\lambda}_{(i, ~j))})^2}{\hat{\lambda}_{(i, ~j))}}\\
+#'     & \underset{\text{If}~ H_0 ~ \text{is TRUE}}{\chi^2_{(\text{pearson})}} \approx \chi^2_{(I-1)\times (J-1)}\\
+#'     & \text{Trend Test Statistics} = M^2 = r^2 \times (n-1)\\
+#'     & \underset{\text{If} ~H_0 ~ \text{Is TRUE}}{M^2} \approx \chi^2_{(1)} \\
+#'     & n = \sum_{i =1}^I\sum_{j=1}^J n_{(i, ~j)}, \\
+#'     & r = \text{Corr}(X_1, ~X_2), \quad X_1, ~ X_2 ~\text{Are two variables of contigency table}
+#'     \end{align}
 #' }
 #' @examples 
 #' \dontrun{data(table_2)
@@ -1680,12 +1656,12 @@ Table_Test_Result <- function(tab, Levels, idLevel = 0){
     p_value_trend <- pchisq(M2, df = 1, lower.tail = F)
     tab_res1 <- cbind(tab, N1)
     tab_res2 <- rbind(tab_res1, c(N2, n))
-    row_0 <- c(IfElse(idLevel, Levels[[2]], paste("level", 1:n2, sep = "-")), "Total")
+    row_0 <- c(ifel(idLevel, Levels[[2]], paste("level", 1:n2, sep = "-")), "Total")
     tab_res3 <- cbind(lambda_hat %>% round(4), rowSums(lambda_hat))
     tab_res4 <- rbind(tab_res3, c(colSums(lambda_hat), n))
     tab_res_5 <- rbind(row_0, tab_res4)
     tab_final_1 <- rbind(row_0, tab_res2, tab_res_5)
-    col_0 <- rep(c("Levels", IfElse(idLevel, Levels[[1]], paste("level", 1:n1, sep = "-")), "Total"), 2)
+    col_0 <- rep(c("Levels", ifel(idLevel, Levels[[1]], paste("level", 1:n1, sep = "-")), "Total"), 2)
     tab_final_2 <- cbind(col_0, tab_final_1)
     dimnames(tab_final_2) <- NULL
     pval_3 <- c(p_value_pearson, p_value_likelihood_ratio, p_value_trend)
@@ -1707,14 +1683,14 @@ Table_Test_Result <- function(tab, Levels, idLevel = 0){
     for(i in (m1-3):(m1-1)){
         j <- j + 1
         Final_result2[i, 4] <- kableExtra :: cell_spec(Final_result2[i, 4],
-        background = IfElse(pval_3[j] > 0.05, 
+        background = ifel(pval_3[j] > 0.05, 
         "green", "red"), color = "white", 
         bold = T)
     }
     for(k in (n1 + 4):(2*n1 + 3)){
         for(h in 2:(n2 + 1)){
             Final_result2[k, h] <- kableExtra :: cell_spec(Final_result2[k, h],
-            background = IfElse(as.numeric(Final_result2[k, h]) >= 5, 
+            background = ifel(as.numeric(Final_result2[k, h]) >= 5, 
             "green", "red"), color = "white", 
             bold = T)
         }
@@ -1749,3 +1725,23 @@ Table_Test_Result <- function(tab, Levels, idLevel = 0){
     original_table = tab, table_results = Table_result)
     return(F_result)
 }
+
+
+#' The base Function of R for applying a condition on a vector at the
+#'     same time is in the form that  return is the first value of the vecotr 
+#'     This function is designed to return a vector by applying a condition on a vector.
+#' 
+#' @seealso  \code{\link[base:ifelse]{base::ifelse()}}
+#' 
+#' @usage \code{ifel(cond, x, y)}
+#' @param cond Alogical value, that is TRUE or FALSE
+#' @param x if \code{cond = TRUE} return \code{x}
+#' @param y if \code{cond = FALSE} return \code{y}
+#' 
+#' @examples 
+#' \dontrun{ifel(TRUE, c(1, 2, 5), c(4, 1, 3))}
+#' @export 
+ifel <- function(cond, x, y){
+    if(cond) return(x) else return(y)
+}
+
