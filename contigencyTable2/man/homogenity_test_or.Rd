@@ -4,8 +4,8 @@
 \alias{homogenity_test_or}
 \title{this function created for get mantel-haenszel and test homogenty of OR}
 \usage{
-\code{homogenity_test_or(x, partial_oddsratio_method = "wald",
-    confront_var = "age")}
+homogenity_test_or(x, partial_oddsratio_method = "wald",
+    confront_var = "age")
 }
 \arguments{
 \item{x}{is array with Atleast 3 dimension}

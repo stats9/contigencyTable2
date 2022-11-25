@@ -4,10 +4,10 @@
 \alias{rr}
 \title{define function for get relative risk results}
 \usage{
-\code{rr(n11, n12, n21, n22, varname1 = "Expose", 
-    varname2 = "Disease", levels_var1 = c("Exposed", 
+rr(n11, n12, n21, n22, 
+    varname1 = "Expose", varname2 = "Diseasee", levels_var1 = c("Exposed", 
     "UnExposed"), levels_var2 = c("Disease", "UnDisease"), 
-    method = "wald", conf_level = 0.95)}
+    method = "wald", conf_level = 0.95, nboot = 1000)
 }
 \arguments{
 \item{n11}{see also \code{\link{get_contigency_result}}}
@@ -26,8 +26,10 @@
 
 \item{levels_var2}{see also \code{\link{get_contigency_result}}}
 
-\item{method}{It has two modes, ‍‍‍\code{"wald"} and \code{"boot"}, which is the
-\code{"boot"} mode based on resampling.}
+\item{method}{It has two modes: \code{"wald", "boot"}
+which is the \code{"boot"} mode based on resampling Method.}
+
+\item{conf_level}{see \code{\link{odr}}}
 
 \item{nboot}{when \code{method = "boot"} therefore nboot is number of
 replicates that make resampling. \href{https://uc-r.github.io/resampling_methods}{resamplingMethods}.}
@@ -39,5 +41,6 @@ two table for RiskRatio results.
 define function for get relative risk results
 }
 \examples{
-\dontrun{rr(475, 461, 7, 61, "Expose", "Disease", c("Exposed", "UnExposed"), c("Disease", "UnDisease"), method = "boot", conf_level = 0.95, nboot = 1000)}
+\dontrun{rr(475, 461, 7, 61, "Expose", "Disease", c("Exposed", "UnExposed"), 
+    c("Disease", "UnDisease"), method = "boot", conf_level = 0.95, nboot = 1000)}
 }

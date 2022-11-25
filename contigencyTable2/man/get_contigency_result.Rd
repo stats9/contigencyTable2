@@ -4,10 +4,10 @@
 \alias{get_contigency_result}
 \title{Function to create a complete table results for contigency table}
 \usage{
-\code{get_contigency_result(n11, n12, n21, n22,
+get_contigency_result(n11, n12, n21, n22,
     varname1 = "Expose", varname2 = "Disease",
     levels_var1 = c("Exposed", "UnExposed"), 
-    levels_var2 = c("Disease", "UnDisease"), show_table_results = TRUE)}
+    levels_var2 = c("Disease", "UnDisease"), show_table_results = TRUE)
 }
 \arguments{
 \item{n11}{The number that shows this is that the first
@@ -40,8 +40,7 @@ FALSE and TRUE, when in the TRUE state, is displayed in the output of a
 complete table as an HTML page.}
 }
 \value{
-Table_results A list containing 8 output tables in
-\href{https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html}{kableExtra} format,
+Table_results A list containing 8 output tables in html format,
 showing the outputs for each table.
 
 stat_R_results list of 8 table as dataframe format for show
@@ -51,5 +50,10 @@ result of table that generate from contigency table.
 Function to create a complete table results for contigency table
 }
 \examples{
-\dontrun{get_contigency_result(475, 461, 7, 61, "Expose", "Disease",levels_var1 = c("Exposed", "UnExposed"), levels_var2 = c("Disease", "UnDisease"), show_table_results = TRUE)}
+\dontrun{get_contigency_result(
+    n11 = 475, n12 = 461, n21 = 7, n22 = 61, 
+    varname1 = "Expose", varname2 = "Disease",
+    levels_var1 = c("Exposed", "UnExposed"), 
+    levels_var2 = c("Disease", "UnDisease"), 
+    show_table_results = TRUE)}
 }

@@ -5,7 +5,7 @@
 \title{This function is prepared to check whether the package is installed by
 entering the name of a package as a string.}
 \usage{
-\code{check_package("name of package")}
+check_package(pak)
 }
 \arguments{
 \item{pak}{name of package as string format}
@@ -18,5 +18,7 @@ This function is prepared to check whether the package is installed by
 entering the name of a package as a string.
 }
 \examples{
-\dontrun{check_package("my package name")}
+\dontrun{
+    pak <- "ggplot2"
+    check_package(pak)}
 }

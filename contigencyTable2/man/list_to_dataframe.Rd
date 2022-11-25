@@ -5,10 +5,10 @@
 \title{this function created for convert a list to dataframe,
 List members must be vectors with equal number of members.}
 \usage{
-\code{list_to_dataframe(mylist)}
+list_to_dataframe(List)
 }
 \arguments{
-\item{list}{a list; List members must be vectors with equal number of members}
+\item{List}{a list; List members must be vectors with equal number of members}
 }
 \value{
 a dataframe, A dataframe whose columns are members of the input list.
@@ -18,5 +18,7 @@ this function created for convert a list to dataframe,
 List members must be vectors with equal number of members.
 }
 \examples{
-\dontrun{list_to_dataframe(mylist)}
+\dontrun{
+    List = list(a = c(1, 2, 3, 4), b = c("a", "b", "c", "d"))
+    list_to_dataframe(List)}
 }

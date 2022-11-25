@@ -6,7 +6,7 @@
 same time is in the form that  return is the first value of the vecotr
 This function is designed to return a vector by applying a condition on a vector.}
 \usage{
-\code{ifel(cond, x, y)}
+ifel(cond, x, y)
 }
 \arguments{
 \item{cond}{Alogical value, that is TRUE or FALSE}

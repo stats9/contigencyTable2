@@ -1,9 +1,10 @@
 #' Function to create a complete table results for contigency table
 #' 
-#' @usage \code{get_contigency_result(n11, n12, n21, n22,
+#' 
+#' @usage get_contigency_result(n11, n12, n21, n22,
 #'     varname1 = "Expose", varname2 = "Disease",
 #'     levels_var1 = c("Exposed", "UnExposed"), 
-#'     levels_var2 = c("Disease", "UnDisease"), show_table_results = TRUE)}
+#'     levels_var2 = c("Disease", "UnDisease"), show_table_results = TRUE)
 #' @param n11 The number that shows this is that the first 
 #' variable of the table is at its first level and the second 
 #' variable of the table is also at its first level
@@ -25,14 +26,46 @@
 #' @param show_table_results A logical variable that takes two values, 
 #'     FALSE and TRUE, when in the TRUE state, is displayed in the output of a 
 #'     complete table as an HTML page.
-#' @return Table_results A list containing 8 output tables in 
-#'     \href{https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html}{kableExtra} format, 
+#' @return Table_results A list containing 8 output tables in html format, 
 #'     showing the outputs for each table.
 #' @return stat_R_results list of 8 table as dataframe format for show
 #'     result of table that generate from contigency table.
+#' 
+#' @importFrom stats dhyper
+#' @importFrom stats cor
+#' @importFrom stats fisher.test
+#' @importFrom stats chisq.test
+#' @importFrom stats mantelhaen.test
+#' @importFrom stats pchisq
+#' @importFrom stats setNames
+#' @importFrom utils installed.packages
+#' @importFrom magrittr %>% 
+#' @importFrom Hmisc somers2
+#' @importFrom Hmisc rcorr.cens
+#' @importFrom epitools riskratio
+#' @importFrom epitools expected
+#' @importFrom epitools oddsratio
+#' @importFrom htmltools br
+#' @importFrom htmltools HTML
+#' @importFrom htmltools tagList
+#' @importFrom kableExtra group_rows
+#' @importFrom kableExtra footnote
+#' @importFrom kableExtra cell_spec
+#' @importFrom kableExtra kbl
+#' @importFrom kableExtra pack_rows
+#' @importFrom kableExtra row_spec
+#' @importFrom kableExtra column_spec
+#' @importFrom kableExtra kable_paper
+#' @importFrom vcd assocstats
+#' @importFrom vcd woolf_test
 #' @export
 #' @examples
-#'\dontrun{get_contigency_result(475, 461, 7, 61, "Expose", "Disease",levels_var1 = c("Exposed", "UnExposed"), levels_var2 = c("Disease", "UnDisease"), show_table_results = TRUE)}
+#'\dontrun{get_contigency_result(
+#'     n11 = 475, n12 = 461, n21 = 7, n22 = 61, 
+#'     varname1 = "Expose", varname2 = "Disease",
+#'     levels_var1 = c("Exposed", "UnExposed"), 
+#'     levels_var2 = c("Disease", "UnDisease"), 
+#'     show_table_results = TRUE)}
 get_contigency_result <- function(n11, n12, n21, n22, 
 varname1 = "Expose", varname2 = "Disease",
 levels_var1 = c("Exposed", "UnExposed"), 
@@ -782,7 +815,7 @@ return(Total_result)
 
 #' create a function to create original data from a table 2x2 
 #' 
-#' @usage \code{create_dat_two(tab, name1, name2)}
+#' @usage create_dat_two(tab, name1, name2)
 #' @param tab contigency table 2x2
 #' @param name1 A string that name of first variable into table
 #' @param name2 A string that name of second variable into table
@@ -810,27 +843,29 @@ return(res)
 #' for get oddsRatio based on Column 1, Column 2 from a 
 #' contigency table
 #' 
-#' @usage \code{odr(n11, n12, n21, varname1 = "Expose", varname2 = "Disease", 
-#'     levels_var1 = c("Exposed", "UnExposed"), levels_var2 = c("Disease", 
-#'     "UnDisease"), method = "wald", conf_level = 0.95, 
-#'     show_table_result = TRUE))}
-#' @param n11 seealso \code{\link{get_contigency_result}}
-#' @param n12 see also \code{\link{get_contigency_result}}
-#' @param n21 see also \code{\link{get_contigency_result}}
-#' @param n22 see also \code{\link{get_contigency_result}}
-#' @param varname1 see also \code{\link{get_contigency_result}}
-#' @param varname2 see also \code{\link{get_contigency_result}}
-#' @param levels_var1 see also \code{\link{get_contigency_result}}
-#' @param levels_var2 see also \code{\link{get_contigency_result}}
-#' @param method The odds ratio estimation method has three state \code{`"midp"`, 
-#'     `"wald"`, `"exact"`} 
+#' @usage odr(n11, n12, n21, n22, 
+#'     varname1 = "Expose", varname2 = "Disease", 
+#'     levels_var1 = c("Exposed", "UnExposed"), levels_var2 = c("Disease", "UnDisease"), 
+#'     method = "wald", conf_level = 0.95, show_table_result = TRUE)
+#' @param n11 see \code{\link{get_contigency_result}}
+#' @param n12 see \code{\link{get_contigency_result}}
+#' @param n21 see \code{\link{get_contigency_result}}
+#' @param n22 see \code{\link{get_contigency_result}}
+#' @param varname1 see \code{\link{get_contigency_result}}
+#' @param varname2 see \code{\link{get_contigency_result}}
+#' @param levels_var1 see \code{\link{get_contigency_result}}
+#' @param levels_var2 see \code{\link{get_contigency_result}}
+#' @param method The odds ratio estimation method has three state \code{"midp", "wald", "exact"} 
 #' @param conf_level level of confidence Interval
 #' @param show_table_result see also \code{\link{get_contigency_result}}
 #' @return two table of oddsratio results, a html table and a r table
 #' @export 
 #' @examples 
 #'\dontrun{
-#' odr(475, 461, 7, 61, "Expose", "Disease", c("Exposed", "UnExposed"), c("Disease", "UnDisease"), method = "wald", conf_level = 0.95, show_table_result = TRUE)
+#'     odr(n11 = 475, n12 = 461, n21 = 7, n22 = 61, varname1 = "Expose", 
+#'     varname2 = "Disease", levels_var1 = c("Exposed", "UnExposed"), 
+#'     levels_var2 = c("Disease", "UnDisease"), 
+#'     method = "wald", conf_level = 0.95, show_table_result = TRUE)
 #'}
 odr <- function(n11, n12, n21, n22, 
 varname1 = "Expose", varname2 = "Disease", 
@@ -933,10 +968,10 @@ return(Return_result)
 
 #'  define function for get relative risk results 
 #' 
-#' @usage \code{rr(n11, n12, n21, n22, varname1 = "Expose", 
-#'     varname2 = "Disease", levels_var1 = c("Exposed", 
+#' @usage rr(n11, n12, n21, n22, 
+#'     varname1 = "Expose", varname2 = "Diseasee", levels_var1 = c("Exposed", 
 #'     "UnExposed"), levels_var2 = c("Disease", "UnDisease"), 
-#'     method = "wald", conf_level = 0.95)}
+#'     method = "wald", conf_level = 0.95, nboot = 1000)
 #' @param n11 see also \code{\link{get_contigency_result}}
 #' @param n12 see also \code{\link{get_contigency_result}}
 #' @param n21 see also \code{\link{get_contigency_result}}
@@ -945,14 +980,16 @@ return(Return_result)
 #' @param varname2 see also \code{\link{get_contigency_result}}
 #' @param levels_var1 see also \code{\link{get_contigency_result}}
 #' @param levels_var2 see also \code{\link{get_contigency_result}}
-#' @param method It has two modes, ‍‍‍`"wald"` and `"boot"`, which is the 
-#'     `"boot"` mode based on resampling.
+#' @param method It has two modes: \code{"wald", "boot"}
+#'     which is the \code{"boot"} mode based on resampling Method.
+#' @param conf_level see \code{\link{odr}}
 #' @param nboot when \code{method = "boot"} therefore nboot is number of
 #'     replicates that make resampling. \href{https://uc-r.github.io/resampling_methods}{resamplingMethods}.
 #' @return two table for RiskRatio results.
 #' @export
 #' @examples 
-#' \dontrun{rr(475, 461, 7, 61, "Expose", "Disease", c("Exposed", "UnExposed"), c("Disease", "UnDisease"), method = "boot", conf_level = 0.95, nboot = 1000)}
+#' \dontrun{rr(475, 461, 7, 61, "Expose", "Disease", c("Exposed", "UnExposed"), 
+#'     c("Disease", "UnDisease"), method = "boot", conf_level = 0.95, nboot = 1000)}
 rr <- function(n11, n12, n21, n22, 
 varname1 = "Expose", varname2 = "Diseasee", levels_var1 = c("Exposed", 
 "UnExposed"), levels_var2 = c("Disease", "UnDisease"), 
@@ -1065,9 +1102,9 @@ return(Return_result)
 
 #' define function for get Lambda coefficients 
 #' 
-#' @usage \code{lambda_coef_contigency(n11, n12, n21, n22, 
-#'     varname1 = "Expose", varname2 = "Disease", levels_var1 = c("Exposed", 
-#'     "UnExposed"), levels_var2 = c("Dieseae", "UnDisease"))}
+#' @usage lambda_coef_contigency(n11, n12, n21, n22, 
+#'     varname1 = "Expose", varname2 = "Diseasee", levels_var1 = c("Exposed", 
+#'     "UnExposed"), levels_var2 = c("Disease", "UnDisease"))
 #' @param n11 see also \code{\link{get_contigency_result}}
 #' @param n12 see also \code{\link{get_contigency_result}}
 #' @param n21 see also \code{\link{get_contigency_result}}
@@ -1076,11 +1113,12 @@ return(Return_result)
 #' @param varname2 see also \code{\link{get_contigency_result}}
 #' @param levels_var1 see also \code{\link{get_contigency_result}}
 #' @param levels_var2 see also \code{\link{get_contigency_result}}
-#' @return table of lambda result, for more detail of what is lambda 
-#'     \href{https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/procstat/procstat_freq_details115.htm}{SAS_help}
+#' @return table of lambda result, for more detail of what is lambda
 #' @export
 #' @examples 
-#' \dontrun{lambda_coef_contigency(475, 461, 7, 61, "Expose", "Disease", levels_var1 = c("Exposed", "UnExposed"), levels_var2 = c("Disease", "UnDisease"))}
+#' \dontrun{lambda_coef_contigency(475, 461, 7, 61, "Expose", "Disease", 
+#'     levels_var1 = c("Exposed", "UnExposed"), 
+#'     levels_var2 = c("Disease", "UnDisease"))}
 lambda_coef_contigency <- function(n11, n12, n21, n22, 
 varname1 = "Expose", varname2 = "Diseasee", levels_var1 = c("Exposed", 
 "UnExposed"), levels_var2 = c("Disease", "UnDisease")){
@@ -1147,9 +1185,10 @@ return(list(Result = result, Table = table_lam))
 
 #' Uncertainty coefficient function 
 #' 
-#' @usage \code{uncerainty_get(n11, n12, n21, n22, 
-#'     varname1 = "Expose", varname2 = "Disease", levels_var1 = c("Exposed", 
-#'     "UnExposed"), levels_var2 = c("Dieseae", "UnDisease"))}
+#' @usage uncertainty_get(n11, n12, n21, n22, 
+#'     varname1 = "Expose", varname2 = "Disease", 
+#'     levels_var1 = c("Exposed", "UnExposed"), 
+#'     levels_var2 = c("Disease", "UnDisease"))
 #' @param n11 see also \code{\link{get_contigency_result}}
 #' @param n12 see also \code{\link{get_contigency_result}}
 #' @param n21 see also \code{\link{get_contigency_result}}
@@ -1158,15 +1197,22 @@ return(list(Result = result, Table = table_lam))
 #' @param varname2 see also \code{\link{get_contigency_result}}
 #' @param levels_var1 see also \code{\link{get_contigency_result}}
 #' @param levels_var2 see also \code{\link{get_contigency_result}}
-#' @return table of uncertainty coefficienty results, 
-#'     for more detail of what is uncertainty coefficienty see 
-#'     \href{https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/procstat/procstat_freq_details115.htm}{SAS_help}
+#' @return table of uncertainty coefficienty results
+#' @importFrom DescTools BreslowDayTest
+#' @importFrom DescTools KendallTauA
+#' @importFrom DescTools StuartTauC
+#' @importFrom DescTools KendallTauB
+#' @importFrom DescTools MHChisqTest
 #' @export
 #' @examples 
-#' \dontrun{uncertainty_get(475, 461, 7, 61, "Expose", "Disease", levels_var1 = c("Exposed", "UnExposed"), levels_var2 = c("Disease", "UnDisease"))}
+#' \dontrun{uncertainty_get(n11 = 475, n12 = 461, 
+#'     n21 = 7, n22 = 61, varname1 = "Expose", 
+#'     varname2 = "Disease", 
+#'     levels_var1 = c("Exposed", "UnExposed"), 
+#'     levels_var2 = c("Disease", "UnDisease"))}
 #' @export
 uncertainty_get <- function(n11, n12, n21, n22, 
-varname1 = "Expose", varname2 = "Diseasee", levels_var1 = c("Exposed", 
+varname1 = "Expose", varname2 = "Disease", levels_var1 = c("Exposed", 
 "UnExposed"), levels_var2 = c("Disease", "UnDisease")){
 
 # prepare data
@@ -1228,9 +1274,9 @@ return(list(Result = result, Table = table_unc))
 #' this function created for get mantel-haenszel and test homogenty of OR 
 #' 
 #' 
-#' @importFrom magrittr %>% 
-#' @usage \code{homogenity_test_or(x, partial_oddsratio_method = "wald",
-#'     confront_var = "age")}
+#'
+#' @usage homogenity_test_or(x, partial_oddsratio_method = "wald",
+#'     confront_var = "age")
 #' @param x is array with Atleast 3 dimension
 #' @param partial_oddsratio_method  method The odds ratio estimation method has three state \code{"midp", 
 #' "wald", "exact"} 
@@ -1238,6 +1284,9 @@ return(list(Result = result, Table = table_unc))
 #' @return odd_ratio_result result 
 #' @return test_result resut results
 #' @return tabe_test t table 
+#' @importFrom dplyr relocate
+#' @importFrom dplyr mutate
+#' @importFrom tibble rownames_to_column
 #' @examples 
 #' \dontrun{homogenity_test_or(x, partial_oddsratio_method = "wald", confront_var = "age")}
 #' @export
@@ -1338,14 +1387,15 @@ confront_var = "age"){
 #'     List members must be vectors with equal number of members.
 #' 
 #' 
-#' @usage \code{list_to_dataframe(mylist)}
-#' @param list a list; List members must be vectors with equal number of members
+#' @usage list_to_dataframe(List)
+#' @param List a list; List members must be vectors with equal number of members
 #' @return a dataframe, A dataframe whose columns are members of the input list.
 #' @examples 
-#' \dontrun{list_to_dataframe(mylist)}
+#' \dontrun{
+#'     List = list(a = c(1, 2, 3, 4), b = c("a", "b", "c", "d"))
+#'     list_to_dataframe(List)}
 #' @export
 list_to_dataframe <- function(List){
-List <- xbar1
 Nam <- names(List)
 n <- length(List)
 N <- lengths(List)
@@ -1367,11 +1417,13 @@ return(res)
 #'     entering the name of a package as a string.
 #' 
 #' 
-#' @usage \code{check_package("name of package")}
+#' @usage check_package(pak)
 #' @param pak name of package as string format
 #' @return return a string ("this package is not installed") or a vector with two element, name and version of vector 
 #' @examples 
-#' \dontrun{check_package("my package name")}
+#' \dontrun{
+#'     pak <- "ggplot2"
+#'     check_package(pak)}
 #' @export
 check_package <- function(pak){
 my_paks <- installed.packages()
@@ -1394,7 +1446,7 @@ return(res)
 #' very fast and good function, this function is also suitable.
 #' 
 #' 
-#' @usage \code{h_fisher(tab, alternative = "two-sided")}
+#' @usage h_fisher(tab, alternative = "two-sided")
 #' @param tab contigency table \deqn{2 \times 2}
 #' @param alternative argumment that can take 3 value ("two-sided", "less", "greater")
 #' @return a vector with two element \code{"p-value", "p-table"} that, \code{"p-value" is} \deqn{p_{value}} of test and
@@ -1406,7 +1458,6 @@ return(res)
 #'     h_fisher(tab2, alternative = "two-sided")}
 #' @export
 h_fisher <- function(tab, alternative = "two-sided"){
-    tab <- table_2
     n11 <- tab[1, 1]
     n12 <- tab[1, 2]
     n21 <- tab[2, 1]
@@ -1502,8 +1553,8 @@ return(list(results = result_, table_result = table_result))
 #' a data set with type; Create a matrix or dataframe or list.
 #' 
 #' 
-#' @usage \code{get_dat_from_tab(tab, Levels = NULL , idLevel = 0, data_type = "Matrix", 
-#'     varnames = c("Var1", "Var2"))}
+#' @usage get_dat_from_tab(tab, Levels = NULL , idLevel = 0, data_type = "Matrix", 
+#'     varnames = c("Var1", "Var2"))
 #' @param tab contigency table based on Two Variables.
 #' @param Levels A list with two members, the first member of the variable levels 
 #'     that is distributed in the rows of the contigency 
@@ -1602,7 +1653,7 @@ varnames = c("Var1", "Var2")){
 #' the exact test should also be performed or not. bring.
 #' 
 #' 
-#' @usage \code{Table_Test_Result(tab, Levels, idLevel = 0)}
+#' @usage Table_Test_Result(tab, Levels, idLevel = 0)
 #' @param tab contigency table with two variable, that any variable have I (I >= 2) levels.
 #' @param Levels see \code{\link{get_dat_from_tab}}
 #' @param idLevel see \code{\link{get_dat_from_tab}}
@@ -1738,7 +1789,7 @@ Table_Test_Result <- function(tab, Levels, idLevel = 0){
 #' 
 #' @seealso  \code{\link[base:ifelse]{base::ifelse()}}
 #' 
-#' @usage \code{ifel(cond, x, y)}
+#' @usage ifel(cond, x, y)
 #' @param cond Alogical value, that is TRUE or FALSE
 #' @param x if \code{cond = TRUE} return \code{x}
 #' @param y if \code{cond = FALSE} return \code{y}

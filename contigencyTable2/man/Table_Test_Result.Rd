@@ -7,7 +7,7 @@ or non-connection of the columns and rows of a contigency table and to output th
 test statistics as well as the expected values of the table and to check whether
 the exact test should also be performed or not. bring.}
 \usage{
-\code{Table_Test_Result(tab, Levels, idLevel = 0)}
+Table_Test_Result(tab, Levels, idLevel = 0)
 }
 \arguments{
 \item{tab}{contigency table with two variable, that any variable have I (I >= 2) levels.}

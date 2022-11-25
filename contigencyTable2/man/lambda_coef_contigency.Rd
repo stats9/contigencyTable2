@@ -4,9 +4,9 @@
 \alias{lambda_coef_contigency}
 \title{define function for get Lambda coefficients}
 \usage{
-\code{lambda_coef_contigency(n11, n12, n21, n22, 
-    varname1 = "Expose", varname2 = "Disease", levels_var1 = c("Exposed", 
-    "UnExposed"), levels_var2 = c("Dieseae", "UnDisease"))}
+lambda_coef_contigency(n11, n12, n21, n22, 
+    varname1 = "Expose", varname2 = "Diseasee", levels_var1 = c("Exposed", 
+    "UnExposed"), levels_var2 = c("Disease", "UnDisease"))
 }
 \arguments{
 \item{n11}{see also \code{\link{get_contigency_result}}}
@@ -27,11 +27,12 @@
 }
 \value{
 table of lambda result, for more detail of what is lambda
-\href{https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/procstat/procstat_freq_details115.htm}{SAS_help}
 }
 \description{
 define function for get Lambda coefficients
 }
 \examples{
-\dontrun{lambda_coef_contigency(475, 461, 7, 61, "Expose", "Disease", levels_var1 = c("Exposed", "UnExposed"), levels_var2 = c("Disease", "UnDisease"))}
+\dontrun{lambda_coef_contigency(475, 461, 7, 61, "Expose", "Disease", 
+    levels_var1 = c("Exposed", "UnExposed"), 
+    levels_var2 = c("Disease", "UnDisease"))}
 }

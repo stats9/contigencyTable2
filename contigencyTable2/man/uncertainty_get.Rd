@@ -4,9 +4,10 @@
 \alias{uncertainty_get}
 \title{Uncertainty coefficient function}
 \usage{
-\code{uncerainty_get(n11, n12, n21, n22, 
-    varname1 = "Expose", varname2 = "Disease", levels_var1 = c("Exposed", 
-    "UnExposed"), levels_var2 = c("Dieseae", "UnDisease"))}
+uncertainty_get(n11, n12, n21, n22, 
+    varname1 = "Expose", varname2 = "Disease", 
+    levels_var1 = c("Exposed", "UnExposed"), 
+    levels_var2 = c("Disease", "UnDisease"))
 }
 \arguments{
 \item{n11}{see also \code{\link{get_contigency_result}}}
@@ -26,13 +27,15 @@
 \item{levels_var2}{see also \code{\link{get_contigency_result}}}
 }
 \value{
-table of uncertainty coefficienty results,
-for more detail of what is uncertainty coefficienty see
-\href{https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/procstat/procstat_freq_details115.htm}{SAS_help}
+table of uncertainty coefficienty results
 }
 \description{
 Uncertainty coefficient function
 }
 \examples{
-\dontrun{uncertainty_get(475, 461, 7, 61, "Expose", "Disease", levels_var1 = c("Exposed", "UnExposed"), levels_var2 = c("Disease", "UnDisease"))}
+\dontrun{uncertainty_get(n11 = 475, n12 = 461, 
+    n21 = 7, n22 = 61, varname1 = "Expose", 
+    varname2 = "Disease", 
+    levels_var1 = c("Exposed", "UnExposed"), 
+    levels_var2 = c("Disease", "UnDisease"))}
 }

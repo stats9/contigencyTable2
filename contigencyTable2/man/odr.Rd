@@ -5,30 +5,29 @@
 \title{for get oddsRatio based on Column 1, Column 2 from a
 contigency table}
 \usage{
-\code{odr(n11, n12, n21, varname1 = "Expose", varname2 = "Disease", 
-    levels_var1 = c("Exposed", "UnExposed"), levels_var2 = c("Disease", 
-    "UnDisease"), method = "wald", conf_level = 0.95, 
-    show_table_result = TRUE))}
+odr(n11, n12, n21, n22, 
+    varname1 = "Expose", varname2 = "Disease", 
+    levels_var1 = c("Exposed", "UnExposed"), levels_var2 = c("Disease", "UnDisease"), 
+    method = "wald", conf_level = 0.95, show_table_result = TRUE)
 }
 \arguments{
-\item{n11}{seealso \code{\link{get_contigency_result}}}
+\item{n11}{see \code{\link{get_contigency_result}}}
 
-\item{n12}{see also \code{\link{get_contigency_result}}}
+\item{n12}{see \code{\link{get_contigency_result}}}
 
-\item{n21}{see also \code{\link{get_contigency_result}}}
+\item{n21}{see \code{\link{get_contigency_result}}}
 
-\item{n22}{see also \code{\link{get_contigency_result}}}
+\item{n22}{see \code{\link{get_contigency_result}}}
 
-\item{varname1}{see also \code{\link{get_contigency_result}}}
+\item{varname1}{see \code{\link{get_contigency_result}}}
 
-\item{varname2}{see also \code{\link{get_contigency_result}}}
+\item{varname2}{see \code{\link{get_contigency_result}}}
 
-\item{levels_var1}{see also \code{\link{get_contigency_result}}}
+\item{levels_var1}{see \code{\link{get_contigency_result}}}
 
-\item{levels_var2}{see also \code{\link{get_contigency_result}}}
+\item{levels_var2}{see \code{\link{get_contigency_result}}}
 
-\item{method}{The odds ratio estimation method has three state \code{`"midp"`, 
-`"wald"`, `"exact"`}}
+\item{method}{The odds ratio estimation method has three state \code{"midp", "wald", "exact"}}
 
 \item{conf_level}{level of confidence Interval}
 
@@ -43,6 +42,9 @@ contigency table
 }
 \examples{
 \dontrun{
-odr(475, 461, 7, 61, "Expose", "Disease", c("Exposed", "UnExposed"), c("Disease", "UnDisease"), method = "wald", conf_level = 0.95, show_table_result = TRUE)
+    odr(n11 = 475, n12 = 461, n21 = 7, n22 = 61, varname1 = "Expose", 
+    varname2 = "Disease", levels_var1 = c("Exposed", "UnExposed"), 
+    levels_var2 = c("Disease", "UnDisease"), 
+    method = "wald", conf_level = 0.95, show_table_result = TRUE)
 }
 }

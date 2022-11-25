@@ -6,7 +6,7 @@
 Although the \code{\link[stats:fisher.test]{stats::fisher.test()}} function is a
 very fast and good function, this function is also suitable.}
 \usage{
-\code{h_fisher(tab, alternative = "two-sided")}
+h_fisher(tab, alternative = "two-sided")
 }
 \arguments{
 \item{tab}{contigency table \deqn{2 \times 2}}

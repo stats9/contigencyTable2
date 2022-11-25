@@ -6,8 +6,8 @@
 from an Contigency table based on two variables,
 a data set with type; Create a matrix or dataframe or list.}
 \usage{
-\code{get_dat_from_tab(tab, Levels = NULL , idLevel = 0, data_type = "Matrix", 
-    varnames = c("Var1", "Var2"))}
+get_dat_from_tab(tab, Levels = NULL , idLevel = 0, data_type = "Matrix", 
+    varnames = c("Var1", "Var2"))
 }
 \arguments{
 \item{tab}{contigency table based on Two Variables.}

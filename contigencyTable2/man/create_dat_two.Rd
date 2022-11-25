@@ -4,7 +4,7 @@
 \alias{create_dat_two}
 \title{create a function to create original data from a table 2x2}
 \usage{
-\code{create_dat_two(tab, name1, name2)}
+create_dat_two(tab, name1, name2)
 }
 \arguments{
 \item{tab}{contigency table 2x2}
