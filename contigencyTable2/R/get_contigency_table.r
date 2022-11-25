@@ -1,3 +1,18 @@
+#' @importFrom stats dhyper cor fisher.test chisq.test mantelhaen.test pchisq setNames
+#' @importFrom utils installed.packages
+#' @importFrom magrittr %>% 
+#' @importFrom Hmisc somers2 rcorr.cens
+#' @importFrom epitools riskratio expected oddsratio riskratio.boot
+#' @importFrom htmltools br HTML tagList browsable
+#' @importFrom kableExtra group_rows footnote cell_spec kbl pack_rows row_spec column_spec kable_paper
+#' @importFrom vcd assocstats woolf_test
+#' @importFrom DescTools BreslowDayTest KendallTauA StuartTauC KendallTauB MHChisqTest
+#' @importFrom dplyr relocate mutate
+#' @importFrom tibble rownames_to_column
+NULL
+#> NULL
+
+
 #' Function to create a complete table results for contigency table
 #' 
 #' 
@@ -31,33 +46,6 @@
 #' @return stat_R_results list of 8 table as dataframe format for show
 #'     result of table that generate from contigency table.
 #' 
-#' @importFrom stats dhyper
-#' @importFrom stats cor
-#' @importFrom stats fisher.test
-#' @importFrom stats chisq.test
-#' @importFrom stats mantelhaen.test
-#' @importFrom stats pchisq
-#' @importFrom stats setNames
-#' @importFrom utils installed.packages
-#' @importFrom magrittr %>% 
-#' @importFrom Hmisc somers2
-#' @importFrom Hmisc rcorr.cens
-#' @importFrom epitools riskratio
-#' @importFrom epitools expected
-#' @importFrom epitools oddsratio
-#' @importFrom htmltools br
-#' @importFrom htmltools HTML
-#' @importFrom htmltools tagList
-#' @importFrom kableExtra group_rows
-#' @importFrom kableExtra footnote
-#' @importFrom kableExtra cell_spec
-#' @importFrom kableExtra kbl
-#' @importFrom kableExtra pack_rows
-#' @importFrom kableExtra row_spec
-#' @importFrom kableExtra column_spec
-#' @importFrom kableExtra kable_paper
-#' @importFrom vcd assocstats
-#' @importFrom vcd woolf_test
 #' @export
 #' @examples
 #'\dontrun{get_contigency_result(
@@ -79,7 +67,7 @@ dat_tab <- as.table(dat)
 
 ## create expected tab
 
-ex_tab <- epitools :: expected(dat_tab) 
+ex_tab <- expected(dat_tab) 
 ex_tab <- round(ex_tab, 3)
 
 ## create 3 first rows 
@@ -141,26 +129,26 @@ lab1 <- paste("Table of", varname1, "by",
 varname2, sep = " ")
 
 
-a1 <- kableExtra :: kbl(freq_table[, -1], 
+a1 <- kbl(freq_table[, -1], 
 caption = lab1, align = "r")
 
-a2 <- kableExtra :: kable_paper(a1, "hover", full_width = F)
+a2 <- kable_paper(a1, "hover", full_width = F)
 
-a3 <- kableExtra :: column_spec(a2, 1, border_left = T, border_right = T)
+a3 <- column_spec(a2, 1, border_left = T, border_right = T)
 
-a4 <- kableExtra :: column_spec(a3, 1:2, color = "#1c0345", 
+a4 <- column_spec(a3, 1:2, color = "#1c0345", 
 background = "#d4ecf65e", 
 italic = T, bold = T)
 
-a5 <- kableExtra :: row_spec(a4, 1:3, 
+a5 <- row_spec(a4, 1:3, 
 color = "#1c0345", 
 background = "#d4ecf65e", 
 hline_after = T, 
 bold = T, 
 italic = T)
-a6 <- kableExtra :: pack_rows(a5, levels_var1[1], 4, 8)
+a6 <- pack_rows(a5, levels_var1[1], 4, 8)
 
-a7 <- kableExtra :: pack_rows(a6, levels_var1[2], 9, 13) -> table1
+a7 <- pack_rows(a6, levels_var1[2], 9, 13) -> table1
 
 ## statistics table
 
@@ -186,7 +174,7 @@ p_chi_T <- round(p_chi_T, 4)
 
 
 ## Mantel-Haenszel Chi-square
-Mantel <- DescTools :: MHChisqTest(dat_tab)
+Mantel <- MHChisqTest(dat_tab)
 mstat <- Mantel$statistic
 mstat <- round(mstat, 4)
 p_mantel <- Mantel$p.value
@@ -195,7 +183,7 @@ p_mantel <- round(p_mantel, 4)
 
 ## likelihood Ratio chi-square
 
-like <- vcd :: assocstats(dat_tab)
+like <- assocstats(dat_tab)
 
 likel_stat <- like$chisq_tests[1, 1]
 likel_stat <- round(likel_stat, 4)
@@ -235,15 +223,15 @@ names(stat_table) <- NULL
 lab2 <- paste("Statistics for Table of", varname1, "by", varname2, 
 sep = " ")
 
-b1 <- kableExtra :: kbl(stat_table, caption = lab2, escape = F)
+b1 <- kbl(stat_table, caption = lab2, escape = F)
 
-b2 <- kableExtra :: kable_paper(b1, "hover", full_width = F)
+b2 <- kable_paper(b1, "hover", full_width = F)
 
-b3 <- kableExtra :: column_spec(b2, 1, 
+b3 <- column_spec(b2, 1, 
  border_left = T, 
  border_right = T)
 
-table2 <- kableExtra :: row_spec(b3, 1, 
+table2 <- row_spec(b3, 1, 
 color = "#1c0345", 
 background = "#d4ecf65e", 
 hline_after = T, 
@@ -286,15 +274,15 @@ v2 = fish_res
 ) 
 names(fisher_exact_test) <- NULL
 
-c1 <- kableExtra :: kbl(fisher_exact_test, caption = "Fisher's Exact Test")
+c1 <- kbl(fisher_exact_test, caption = "Fisher's Exact Test")
 
-c2 <- kableExtra :: kable_paper(c1, "hover", full_width = F)
+c2 <- kable_paper(c1, "hover", full_width = F)
 
-c3 <- kableExtra :: column_spec(c2, 1, 
+c3 <- column_spec(c2, 1, 
  border_left = T, 
  border_right = T)
 
-table3 <- kableExtra :: column_spec(c3, 1, color = "#1c0345", 
+table3 <- column_spec(c3, 1, color = "#1c0345", 
 background = "#d4ecf65e", 
 italic = T, bold = T)
 
@@ -321,7 +309,7 @@ return(res)
 
 Dat <- create_dat_two(dat_tab, varname1, varname2)
 
-gama_cor <- Hmisc :: rcorr.cens(Dat[[varname1]], Dat[[varname2]], 
+gama_cor <- rcorr.cens(Dat[[varname1]], Dat[[varname2]], 
 outx = TRUE)[2]
 round(gama_cor, 4) -> gama_cor
 ## kendal and pearson and spearman correlation
@@ -329,13 +317,13 @@ round(gama_cor, 4) -> gama_cor
 pears <- round(cor(Dat[[varname1]], Dat[[varname2]], method = "pearson"), 4)
 spear <- round(cor(Dat[[varname1]], Dat[[varname2]], method = "spearman"), 4)
 
-kend_B <- round(DescTools :: KendallTauB(Dat[[varname1]], Dat[[varname2]]), 4)
-kend_C <- round(DescTools :: StuartTauC(Dat[[varname1]], Dat[[varname2]]), 4)
-kend_A <- round(DescTools :: KendallTauA(Dat[[varname1]], Dat[[varname2]]), 4)
+kend_B <- round(KendallTauB(Dat[[varname1]], Dat[[varname2]]), 4)
+kend_C <- round(StuartTauC(Dat[[varname1]], Dat[[varname2]]), 4)
+kend_A <- round(KendallTauA(Dat[[varname1]], Dat[[varname2]]), 4)
 
-somers_r_c <- round(Hmisc :: somers2(Dat[[varname1]], 
+somers_r_c <- round(somers2(Dat[[varname1]], 
 Dat[[varname2]])[2], 4)
-somers_c_r <- round(Hmisc :: somers2(Dat[[varname2]], 
+somers_c_r <- round(somers2(Dat[[varname2]], 
 Dat[[varname1]])[2], 4)
 
 ## lambda assymetric C|R
@@ -411,15 +399,15 @@ pears, spear, lam_c_r, lam_r_c, lam, unc_c_r, unc_r_c, unc_sym)
 
 names(Coef_table) <- NULL
 labs <- "Coefficients Statistics (correlation and other coefficients)"
-d1 <- kableExtra :: kbl(Coef_table, caption = labs)
+d1 <- kbl(Coef_table, caption = labs)
 
-d2 <- kableExtra :: kable_paper(d1, "hover", full_width = F)
+d2 <- kable_paper(d1, "hover", full_width = F)
 
-d3 <- kableExtra ::  column_spec(d2, 1, 
+d3 <- column_spec(d2, 1, 
  border_left = T, 
  border_right = T)
 
-table4 <- kableExtra :: column_spec(d3, 1, color = "#1c0345", 
+table4 <- column_spec(d3, 1, color = "#1c0345", 
 background = "#d4ecf65e", 
 italic = T, bold = T) 
 ############## Odds Ratio
@@ -427,16 +415,16 @@ italic = T, bold = T)
 #### ref = column 1
 
 ## or wald 
-or_wald <- epitools :: oddsratio(tabd, method = "wald")
+or_wald <- oddsratio(tabd, method = "wald")
 or_wald_val <- round(or_wald$measure[2, 1], 4)
 
 ## or midp 
 
-or_midp <- epitools :: oddsratio(tabd, method = "midp")
+or_midp <- oddsratio(tabd, method = "midp")
 or_midp_val <- round(or_midp$measure[2, 1], 4) 
 
 ## or exact
-or_exact <- epitools :: oddsratio(tabd, method = "fisher")
+or_exact <- oddsratio(tabd, method = "fisher")
 or_exact_val <- round(or_exact$measure[2, 1], 4)
 
 ## confint or wald
@@ -472,17 +460,17 @@ round(or_exact$p.value[2, 2], 4) -> pval_exact
 #### ref = column 2
 
 ## or2 wald 
-or_wald_2 <- epitools :: oddsratio(tabd[, 2:1], method = "wald")
+or_wald_2 <- oddsratio(tabd[, 2:1], method = "wald")
 or_wald_val_2 <- round(or_wald_2$measure[2, 1], 4)
 
 
 ## or2 midp 
 
-or_midp_2 <- epitools :: oddsratio(tabd[, 2:1], method = "midp")
+or_midp_2 <- oddsratio(tabd[, 2:1], method = "midp")
 or_midp_val_2 <- round(or_midp_2$measure[2, 1], 4)
 
 ## or exact
-or_exact_2 <- epitools :: oddsratio(tabd[, 2:1], method = "fisher")
+or_exact_2 <- oddsratio(tabd[, 2:1], method = "fisher")
 or_exact_val_2 <- round(or_exact_2$measure[2, 1], 4)
 
 ## confint or wald2
@@ -520,12 +508,12 @@ round(or_exact_2$p.value[2, 2], 4) -> pval_exact_2
 
 
 ## rr wald
-rr_wald <- epitools :: riskratio(tabd, method = "wald")
+rr_wald <- riskratio(tabd, method = "wald")
 round(rr_wald$measure[2, 1], 4) -> rr_wald_val
  
 ## rr boot
 
-rr_boot <- epitools :: riskratio.boot(tabd, replicates = 5000)
+rr_boot <- riskratio.boot(tabd, replicates = 5000)
 round(rr_boot$measure[2, 1], 4) -> rr_boot_val
 
 ## rr wald ci
@@ -552,12 +540,12 @@ round(rr_boot$p.value[2, 2], 4) -> rr_exact_pval
 
 
 ## rr2 wald
-rr_wald_2 <- epitools :: riskratio(tabd[, 2:1], method = "wald")
+rr_wald_2 <- riskratio(tabd[, 2:1], method = "wald")
 round(rr_wald_2$measure[2, 1], 4) -> rr_wald_val_2
 
 ## rr2 boot
 
-rr_boot_2 <- epitools :: riskratio.boot(tabd[, 2:1], replicates = 5000)
+rr_boot_2 <- riskratio.boot(tabd[, 2:1], replicates = 5000)
 round(rr_boot_2$measure[2, 1], 4) -> rr_boot_val_2
 
 ## rr2 wald ci
@@ -603,26 +591,26 @@ ci_exact_2[2])
 
 names(oddsRatio_results) <- NULL
 
-e1 <- kableExtra :: kbl(oddsRatio_results[, -1], 
+e1 <- kbl(oddsRatio_results[, -1], 
 caption = "Odds Ratio Results", align = "l") 
 
-e2 <- kableExtra :: kable_paper(e1, "hover", full_width = F)
+e2 <- kable_paper(e1, "hover", full_width = F)
 
 
-e3 <- kableExtra :: column_spec(e2, 1:4, 
+e3 <- column_spec(e2, 1:4, 
  border_left = T, 
  border_right = T)
 
 
-e4 <- kableExtra :: column_spec(e3, 1, color = "#1c0345", 
+e4 <- column_spec(e3, 1, color = "#1c0345", 
 background = "#d4ecf65e", 
 italic = T, bold = T)
-e5 <- kableExtra :: row_spec(e4, 1,  color = "#1c0345", 
+e5 <- row_spec(e4, 1,  color = "#1c0345", 
 background = "#d4ecf65e", 
 italic = T, bold = T)
 
-e6 <- kableExtra :: pack_rows(e5, "Reffrence = Column:1", 2, 4) 
-kableExtra :: pack_rows(e6, "Reffrence = Column:2", 5, 7) -> table5
+e6 <- pack_rows(e5, "Reffrence = Column:1", 2, 4) 
+pack_rows(e6, "Reffrence = Column:2", 5, 7) -> table5
 
 
 ## pval table for oddratio
@@ -640,26 +628,26 @@ pval_result)
 )  
 odd_pval_result <- setNames(odd_pval_result, NULL)
 labs = "Odds Ratio P-value Results"
-f1 <- kableExtra :: kbl(odd_pval_result,
+f1 <- kbl(odd_pval_result,
 align = "l", caption = labs)
 
-f2 <- kableExtra :: kable_paper(f1, "hover", full_width = F)
+f2 <- kable_paper(f1, "hover", full_width = F)
 
-f3 <- kableExtra :: column_spec(f2, 1:2, 
+f3 <- column_spec(f2, 1:2, 
  border_left = T, 
  border_right = T)
 
-f4 <- kableExtra :: column_spec(f3, 1, color = "#1c0345", 
+f4 <- column_spec(f3, 1, color = "#1c0345", 
 background = "#d4ecf65e", 
 italic = T, bold = T)
 
-f5 <- kableExtra :: row_spec(f4, 1,  color = "#1c0345", 
+f5 <- row_spec(f4, 1,  color = "#1c0345", 
 background = "#d4ecf65e", 
 italic = T, bold = T)
 
-f6 <- kableExtra :: pack_rows(f5, "Reffrence = Column:1", 2, 4)
+f6 <- pack_rows(f5, "Reffrence = Column:1", 2, 4)
 
-kableExtra :: pack_rows(f6, "Reffrence = Column:2", 5, 7) -> table6
+pack_rows(f6, "Reffrence = Column:2", 5, 7) -> table6
 
 
 ## get relative risk Result
@@ -691,28 +679,28 @@ rr_ci_boot_2[2])
 
 relativeRisk_Result <- setNames(relativeRisk_Result, NULL)
 
-g1 <- kableExtra :: kbl(relativeRisk_Result[, -1], 
+g1 <- kbl(relativeRisk_Result[, -1], 
 caption = "Relative Risk Result", 
 align = "l")
 
-g2 <- kableExtra :: kable_paper(g1, "hover", full_width = F)
+g2 <- kable_paper(g1, "hover", full_width = F)
 
 
-g3 <- kableExtra ::  column_spec(g2, 1:4, 
+g3 <- column_spec(g2, 1:4, 
  border_left = T, 
  border_right = T)
  
- g4 <- kableExtra :: column_spec(g3, 1, color = "#1c0345", 
+ g4 <- column_spec(g3, 1, color = "#1c0345", 
 background = "#d4ecf65e", 
 italic = T, bold = T)
  
-g5 <- kableExtra :: row_spec(g4, 1,  color = "#1c0345", 
+g5 <- row_spec(g4, 1,  color = "#1c0345", 
 background = "#d4ecf65e", 
 italic = T, bold = T)
 
-g6 <- kableExtra :: pack_rows(g5, "Reffrence = Column:1", 2, 3) 
+g6 <- pack_rows(g5, "Reffrence = Column:1", 2, 3) 
 
-kableExtra :: pack_rows(g6, "Reffrence = Column:2", 4, 5) -> table7
+pack_rows(g6, "Reffrence = Column:2", 4, 5) -> table7
 
 
 ## Relative Risk pvalue
@@ -737,52 +725,45 @@ rr_pvalue_result <- setNames(rr_pvalue_result, NULL)
 
 
 labs <- "Relative Risk P-value Results"
-h1 <- kableExtra :: kbl(rr_pvalue_result, caption = labs, 
+h1 <- kbl(rr_pvalue_result, caption = labs, 
 align = "l") 
 
-h2 <- kableExtra :: kable_paper(h1, "hover", full_width = F)
-h3 <- kableExtra ::  column_spec(h2, 1:2, 
+h2 <- kable_paper(h1, "hover", full_width = F)
+h3 <- column_spec(h2, 1:2, 
  border_left = T, 
  border_right = T)
- h4 <- kableExtra :: column_spec(h3, 1, color = "#1c0345", 
+ h4 <- column_spec(h3, 1, color = "#1c0345", 
 background = "#d4ecf65e", 
 italic = T, bold = T)
 
-h5 <- kableExtra :: row_spec(h4, 1,  color = "#1c0345", 
+h5 <- row_spec(h4, 1,  color = "#1c0345", 
 background = "#d4ecf65e", 
 italic = T, bold = T) 
 
-h6 <- kableExtra :: pack_rows(h5, "Reffrence = Column:1", 2, 3)
-kableExtra :: pack_rows(h6, "Reffrence = Column:2", 4, 5) -> table8
+h6 <- pack_rows(h5, "Reffrence = Column:1", 2, 3)
+pack_rows(h6, "Reffrence = Column:2", 4, 5) -> table8
 
 
 ## merge table
 
 if(show_table_results){
-print(htmltools :: browsable(
-htmltools :: tagList(htmltools :: HTML(table1), 
-htmltools :: br(), htmltools :: br(),  htmltools :: br(), 
-
-htmltools :: HTML(table2), 
-htmltools :: br(), htmltools :: br(),  htmltools :: br(),
-
-htmltools :: HTML(table3), 
-htmltools :: br(), htmltools :: br(),  htmltools :: br(),
-
-htmltools :: HTML(table4), 
-htmltools :: br(), htmltools :: br(),  htmltools :: br(),
-
-htmltools :: HTML(table5), 
-htmltools :: br(), htmltools :: br(),  htmltools :: br(),
-
-htmltools :: HTML(table6), 
-htmltools :: br(), htmltools :: br(),  htmltools :: br(),
-
-htmltools :: HTML(table7), 
-htmltools :: br(), htmltools :: br(),  htmltools :: br(),
-
-htmltools :: HTML(table8), 
-htmltools :: br(), htmltools :: br(),  htmltools :: br(),
+print(browsable(
+tagList(HTML(table1), 
+br(), br(), br(), 
+HTML(table2), 
+br(), br(), br(),
+HTML(table3), 
+br(), br(), br(),
+HTML(table4), 
+br(), br(), br(),
+HTML(table5), 
+br(), br(), br(),
+HTML(table6), 
+br(), br(), br(),
+HTML(table7), 
+br(), br(), br(),
+HTML(table8), 
+br(), br(), br(),
 )))
 }
 
@@ -888,7 +869,7 @@ tabd <- table(Dat)
 #### ref = column 1
 
 ## get result 
-ord <- epitools :: oddsratio(tabd, 
+ord <- oddsratio(tabd, 
 method = ifelse(method == "exact", "fisher", method), 
 conf.level = conf_level)
 ord_val <- round(ord$measure[2, 1], 4)
@@ -909,7 +890,7 @@ round(ord$p.value[2, ind_pval], 4) -> ord_pval
 #### ref = column 2
 
 ## ord2 
-ord_2 <- epitools :: oddsratio(tabd[, 2:1], 
+ord_2 <- oddsratio(tabd[, 2:1], 
 method = ifelse(method == "exact", 
 "fisher", method), conf.level = conf_level)
 
@@ -938,7 +919,7 @@ estimate = c(ord_val, ord_val_2),
 
 
 odd_result2 <- odd_result
-odd_result$p.value <- kableExtra :: cell_spec(odd_result$p.value,
+odd_result$p.value <- cell_spec(odd_result$p.value,
 background = ifelse(odd_result$p.value > 0.05, 
 "green", "red"), color = "white", 
 bold = T)
@@ -947,16 +928,16 @@ bold = T)
 foot_note1 <- paste("CI = ", 100 * conf_level, 
 "%", sep = "")
 
-a1 <- kableExtra :: kbl(odd_result, 
+a1 <- kbl(odd_result, 
 caption = "Table of Oddratio Results", escape = F) 
-a2 <- kableExtra :: kable_paper(a1, "hover")
-a3 <- kableExtra :: column_spec(a2, 1, background = "green", 
+a2 <- kable_paper(a1, "hover")
+a3 <- column_spec(a2, 1, background = "green", 
 color = "white", 
 italic = T, bold = T)
-a4 <- kableExtra :: row_spec(a3, 0, background = "green", 
+a4 <- row_spec(a3, 0, background = "green", 
 color = "white", italic = T, bold = T)
 
-kableExtra :: footnote(a4, general = foot_note1,
+footnote(a4, general = foot_note1,
            number = c("if pvalue cell is red, means that p-value < 0.05"),
            ) -> Table_result 
 
@@ -1008,7 +989,7 @@ tabd <- table(Dat)
 
 
 ## get rr column 1
-rr1 <- epitools :: riskratio(tabd, method = method, 
+rr1 <- riskratio(tabd, method = method, 
 conf.level = conf_level, 
 replicates = ifelse(method == "boot", 
 nboot, NULL))
@@ -1031,7 +1012,7 @@ round(rr1$p.value[2, 2], 4) -> rr_exact_pval
 
 # get rr for column 2
 
-rr2 <- epitools :: riskratio(tabd[, 2:1], method = method, 
+rr2 <- riskratio(tabd[, 2:1], method = method, 
 conf.level = conf_level, 
 replicates = ifelse(method == "boot", 
 nboot, NULL))
@@ -1063,13 +1044,13 @@ pvalue_waldMethod = c(rr1_wald_pval, rr2_wald_pval),
 `CI-Upper` = c(rr_ci[2], rr_ci_2[2])) 
 
 riskratio_result2 <- riskratio_result
-riskratio_result$pvalue_exatMethod <- kableExtra :: cell_spec(
+riskratio_result$pvalue_exatMethod <- cell_spec(
 riskratio_result$pvalue_exatMethod,
 background = ifelse(riskratio_result$pvalue_exatMethod > 0.05, 
 "green", "red"), color = "white", 
 bold = T)
 
-riskratio_result$pvalue_waldMethod <- kableExtra :: cell_spec(
+riskratio_result$pvalue_waldMethod <- cell_spec(
 riskratio_result$pvalue_waldMethod,
 background = ifelse(riskratio_result$pvalue_waldMethod > 0.05, 
 "green", "red"), color = "white", 
@@ -1079,18 +1060,18 @@ foot_note1 <- paste("CI = ", 100 * conf_level,
 "%", sep = "")
 
 labs <- "Table of RiskRatio Results"
-a1 <- kableExtra :: kbl(riskratio_result, caption = labs, escape = F)
+a1 <- kbl(riskratio_result, caption = labs, escape = F)
 
-a2 <- kableExtra :: kable_paper(a1, "hover") 
+a2 <- kable_paper(a1, "hover") 
 
-a3 <- kableExtra :: column_spec(a2, 1, background = "green", 
+a3 <- column_spec(a2, 1, background = "green", 
 color = "white", 
 italic = T, bold = T)
 
-a4 <- kableExtra :: row_spec(a3, 0, background = "green", 
+a4 <- row_spec(a3, 0, background = "green", 
 color = "white", italic = T, bold = T)
 
-kableExtra :: footnote(a4, general = foot_note1,
+footnote(a4, general = foot_note1,
            number = c("if pvalue cell is red, means that p-value < 0.05"),
            ) -> Table_result 
 
@@ -1172,11 +1153,11 @@ result <- data.frame(
 )
 labs = paste("Lambda Coefficient for", varname1, "by", varname2, sep = " ")
 
-a1 <- kableExtra :: kbl(result, caption = labs) 
+a1 <- kbl(result, caption = labs) 
 
-a2 <- kableExtra :: kable_paper(a1, "hover") 
+a2 <- kable_paper(a1, "hover") 
 
-kableExtra :: row_spec(a2, 0, 
+row_spec(a2, 0, 
 background = "green", color = "white") -> table_lam
 
 return(list(Result = result, Table = table_lam))
@@ -1198,11 +1179,6 @@ return(list(Result = result, Table = table_lam))
 #' @param levels_var1 see also \code{\link{get_contigency_result}}
 #' @param levels_var2 see also \code{\link{get_contigency_result}}
 #' @return table of uncertainty coefficienty results
-#' @importFrom DescTools BreslowDayTest
-#' @importFrom DescTools KendallTauA
-#' @importFrom DescTools StuartTauC
-#' @importFrom DescTools KendallTauB
-#' @importFrom DescTools MHChisqTest
 #' @export
 #' @examples 
 #' \dontrun{uncertainty_get(n11 = 475, n12 = 461, 
@@ -1262,9 +1238,9 @@ result <- setNames(result, NULL)
 labs = paste("Uncertainty Coefficient for", varname1, "by", varname2, 
 sep = " ")
 rownames(result) = NULL
-a1 <- kableExtra :: kbl(result, caption = labs)
-a2 <- kableExtra :: kable_paper(a1, "hover") 
-kableExtra :: row_spec(a2, 1, 
+a1 <- kbl(result, caption = labs)
+a2 <- kable_paper(a1, "hover") 
+row_spec(a2, 1, 
 background = "green", color = "white") -> table_unc
 
 return(list(Result = result, Table = table_unc))
@@ -1284,9 +1260,6 @@ return(list(Result = result, Table = table_unc))
 #' @return odd_ratio_result result 
 #' @return test_result resut results
 #' @return tabe_test t table 
-#' @importFrom dplyr relocate
-#' @importFrom dplyr mutate
-#' @importFrom tibble rownames_to_column
 #' @examples 
 #' \dontrun{homogenity_test_or(x, partial_oddsratio_method = "wald", confront_var = "age")}
 #' @export
@@ -1302,12 +1275,12 @@ confront_var = "age"){
     odd_result <- matrix(NA, n, 3)
     for(j in 1:n){
         dati <- Partial_tabs[[j]]
-        odd_result[j, ] <- epitools :: oddsratio(dati, method = Type)$measure[2, ]
+        odd_result[j, ] <- oddsratio(dati, method = Type)$measure[2, ]
     }
     ## odd_result
 
     Marginal_tab <- margin.table(x, c(1, 2))
-    odd_crude <- epitools :: oddsratio(Marginal_tab, method = Type)$measure[2, ]
+    odd_crude <- oddsratio(Marginal_tab, method = Type)$measure[2, ]
     test_mantel <- mantelhaen.test(x)
     MH_odd_combined <- c(test_mantel$estimate, test_mantel$conf.int)
     odd_result <- rbind(odd_result, odd_crude, MH_odd_combined) %>%
@@ -1317,15 +1290,15 @@ confront_var = "age"){
      "Marginal OR", 
     "MH OR")
     odd_result <- odd_result %>%
-    dplyr :: mutate(varname = Nam) %>%
-    dplyr :: relocate("varname", .before = "statistic")
+    mutate(varname = Nam) %>%
+    relocate("varname", .before = "statistic")
     rownames(odd_result) <- NULL
 
 
     ######## get test_result
     test_mantel <- mantelhaen.test(x)
-    test_bres <- DescTools :: BreslowDayTest(x)
-    vcd :: woolf_test(x) -> test_woolf
+    test_bres <- BreslowDayTest(x)
+    woolf_test(x) -> test_woolf
     mat_test <- matrix(NA, 3, 2)
 
     MH_res <- c(test_mantel$statistic, test_mantel$p.value) %>% round(4)
@@ -1333,27 +1306,27 @@ confront_var = "age"){
     c(test_woolf$statistic, test_woolf$p.value) %>% round(4) -> woolf_res
     h_test <- rbind(MH_res, Breslow_res, woolf_res) %>% 
     as.data.frame %>% setNames(c("statistic", "p-value")) %>%
-    tibble :: rownames_to_column(var = "Method")
+    rownames_to_column(var = "Method")
     list_result <- list(oddratio_rsult = odd_result, test_result = h_test)
 
     OR_table <- odd_result %>%
-    kableExtra :: kbl(caption = "OddsRatio Results", align = "c") %>%
-    kableExtra :: kable_paper("hover", full_width = F) %>%
-    kableExtra :: pack_rows(paste0("levels of ", confront_var), 1, n) %>%
-    kableExtra :: pack_rows("Marginal OR, Mantel-Haenszel OR", n+1, n+2) %>%
-        kableExtra :: column_spec(1, background = "green", 
+    kbl(caption = "OddsRatio Results", align = "c") %>%
+    kable_paper("hover", full_width = F) %>%
+    pack_rows(paste0("levels of ", confront_var), 1, n) %>%
+    pack_rows("Marginal OR, Mantel-Haenszel OR", n+1, n+2) %>%
+    column_spec(1, background = "green", 
     color = "white", 
     italic = T, bold = T) %>%
-    kableExtra :: row_spec(0, background = "green", 
+    row_spec(0, background = "green", 
     color = "white", italic = T, bold = T)
 
     test_table <- h_test %>%
-    kableExtra :: kbl(caption = "test Results", align = "c") %>%
-    kableExtra :: kable_paper("hover") %>%
-    kableExtra :: column_spec(1, background = "green", 
+    kbl(caption = "test Results", align = "c") %>%
+    kable_paper("hover") %>%
+    column_spec(1, background = "green", 
     color = "white", 
     italic = T, bold = T) %>%
-    kableExtra :: row_spec(0, background = "green", 
+    row_spec(0, background = "green", 
     color = "white", italic = T, bold = T)
     tables <- list(OR_table, test_table)
     return(list(oddratio_rsult = odd_result, test_result = h_test, 
@@ -1532,13 +1505,13 @@ get_pval <- function(M){
 pval_total <- unlist(lapply(Mat_final, get_pval))
 data.frame("p-vlaue" = round(sum(pval_total), 4), "prob-table" = round(sum(pval_total), 4)) -> result_
 result_2 <- result_
-result_2$p.vlaue <- kableExtra :: cell_spec(result_2$p.vlaue, 
+result_2$p.vlaue <- cell_spec(result_2$p.vlaue, 
 background = ifelse(result_2$p.vlaue > 0.05, "green", "red"), color = "white", bold = T)
 result_2 %>%
-kableExtra :: kbl(caption = "Table of Fisher Test for Contigency Table 2x2", escape = F) %>%
-kableExtra :: kable_paper("hover", full_width = F) %>%
-kableExtra :: row_spec(0, background = "green", color = "white", bold = T, italic = T) %>%
-kableExtra :: footnote(general = "if pvalue cell is red, means that p-value < 0.05") -> table_result
+kbl(caption = "Table of Fisher Test for Contigency Table 2x2", escape = F) %>%
+kable_paper("hover", full_width = F) %>%
+row_spec(0, background = "green", color = "white", bold = T, italic = T) %>%
+footnote(general = "if pvalue cell is red, means that p-value < 0.05") -> table_result
 return(list(results = result_, table_result = table_result))
 }
 
@@ -1738,14 +1711,14 @@ Table_Test_Result <- function(tab, Levels, idLevel = 0){
     j <- 0
     for(i in (m1-3):(m1-1)){
         j <- j + 1
-        Final_result2[i, 4] <- kableExtra :: cell_spec(Final_result2[i, 4],
+        Final_result2[i, 4] <- cell_spec(Final_result2[i, 4],
         background = ifel(pval_3[j] > 0.05, 
         "green", "red"), color = "white", 
         bold = T)
     }
     for(k in (n1 + 4):(2*n1 + 3)){
         for(h in 2:(n2 + 1)){
-            Final_result2[k, h] <- kableExtra :: cell_spec(Final_result2[k, h],
+            Final_result2[k, h] <- cell_spec(Final_result2[k, h],
             background = ifel(as.numeric(Final_result2[k, h]) >= 5, 
             "green", "red"), color = "white", 
             bold = T)
@@ -1755,24 +1728,24 @@ Table_Test_Result <- function(tab, Levels, idLevel = 0){
     percent_low <- ss/prod(dim(lambda_hat)) * 100
     Foot_note1 <- sprintf("%d cells (%.2f %s) have expected count less than five. The Minimum expected count is %.2f", ss, percent_low, "%", min(lambda_hat))
     Final_result2 %>%
-    kableExtra :: kbl(caption = "Table of Test Results for Contigency Table", escape = F) %>%
-    kableExtra :: kable_paper("hover") %>%
-    kableExtra :: row_spec(c(1, n1 + 3, 2*n1 + 5), background = "green", 
+    kbl(caption = "Table of Test Results for Contigency Table", escape = F) %>%
+    kable_paper("hover") %>%
+    row_spec(c(1, n1 + 3, 2*n1 + 5), background = "green", 
     color = "white", italic = T, bold = T) %>%
-    kableExtra :: column_spec(1,
+    column_spec(1,
     italic = T, bold = T, width = 1) %>%
-    kableExtra :: footnote(general = Foot_note1,
+    footnote(general = Foot_note1,
            number = c("if pvalue cell is red, means that p-value < 0.05"),
            ) %>%
-    kableExtra :: group_rows(group_label = "ORIGINAL TABLE", 
+    group_rows(group_label = "ORIGINAL TABLE", 
            start_row = 1, end_row = (n1 + 2), 
            label_row_css = "border-top: 3px solid;", italic = TRUE, 
            color = "#d48a00") %>%
-    kableExtra :: group_rows(group_label = "EXPECTED TABLE", 
+    group_rows(group_label = "EXPECTED TABLE", 
            start_row = (n1 + 3), end_row = (2 * n1 + 4), 
            label_row_css = "border-top: 3px solid;", italic = TRUE,
            color = "#d48a00") %>%
-    kableExtra :: group_rows(group_label = "TEST RESULTS", 
+    group_rows(group_label = "TEST RESULTS", 
            start_row = (2*n1 + 5), end_row = (2*n1 + 8), 
            label_row_css = "border-top: 3px solid;", italic = TRUE, 
            color = "#d48a00") -> Table_result

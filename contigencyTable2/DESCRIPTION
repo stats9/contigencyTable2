@@ -1,6 +1,6 @@
 Package: contigencyTable2
 Title: 
-    Create complete tables to show  statistics of contigency tables
+    Create Complete Tables to Show Statistics of Contigency Tables
 Version: 1.3
 Authors@R: 
     person("habib", "ezatabadi", email = "habibezati88@gmail.com", role = c("aut", "cre"))
@@ -13,7 +13,7 @@ BugReports: https://github.com/stats9/contigencyTable2/issues/1
 License: GPL (>=3)
 Encoding: UTF-8
 LazyData: true
-Depends:
+Imports:
     magrittr,
     epitools,
     kableExtra,
