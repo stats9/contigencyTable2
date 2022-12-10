@@ -1,7 +1,7 @@
 Package: contigencyTable2
 Title: 
     Create Complete Tables to Show Statistics of Contigency Tables
-Version: 1.3
+Version: 1.4
 Authors@R: 
     person("habib", "ezatabadi", email = "habibezati88@gmail.com", role = c("aut", "cre"))
 Description: 
@@ -13,6 +13,8 @@ BugReports: https://github.com/stats9/contigencyTable2/issues/1
 License: GPL (>=3)
 Encoding: UTF-8
 LazyData: true
+Depends:
+    R (>= 3.5.0)
 Imports:
     magrittr,
     epitools,
@@ -22,6 +24,9 @@ Imports:
     vcd, 
     dplyr, 
     DescTools, 
-    tibble
+    tibble,
+    ggforce,
+    ggplot2,
+    rstatix
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.2

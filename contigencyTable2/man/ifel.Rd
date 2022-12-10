@@ -3,13 +3,14 @@
 \name{ifel}
 \alias{ifel}
 \title{The base Function of R for applying a condition on a vector at the
-same time is in the form that  return is the first value of the vecotr
-This function is designed to return a vector by applying a condition on a vector.}
+same time is in the form that  return is the first value of the vector
+This function is designed to return a vector by applying a
+condition on a vector.}
 \usage{
 ifel(cond, x, y)
 }
 \arguments{
-\item{cond}{Alogical value, that is TRUE or FALSE}
+\item{cond}{A logical value, that is TRUE or FALSE}
 
 \item{x}{if \code{cond = TRUE} return \code{x}}
 
@@ -17,8 +18,9 @@ ifel(cond, x, y)
 }
 \description{
 The base Function of R for applying a condition on a vector at the
-same time is in the form that  return is the first value of the vecotr
-This function is designed to return a vector by applying a condition on a vector.
+same time is in the form that  return is the first value of the vector
+This function is designed to return a vector by applying a
+condition on a vector.
 }
 \examples{
 \dontrun{ifel(TRUE, c(1, 2, 5), c(4, 1, 3))}

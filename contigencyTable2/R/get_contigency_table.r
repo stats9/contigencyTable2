@@ -1,5 +1,5 @@
-#' @importFrom stats dhyper cor fisher.test chisq.test mantelhaen.test pchisq setNames
-#' @importFrom utils installed.packages
+#' @importFrom stats dhyper cor fisher.test chisq.test mantelhaen.test pchisq setNames pnorm qnorm qf var.test
+#' @importFrom utils installed.packages data
 #' @importFrom magrittr %>% 
 #' @importFrom Hmisc somers2 rcorr.cens
 #' @importFrom epitools riskratio expected oddsratio riskratio.boot
@@ -7,8 +7,15 @@
 #' @importFrom kableExtra group_rows footnote cell_spec kbl pack_rows row_spec column_spec kable_paper
 #' @importFrom vcd assocstats woolf_test
 #' @importFrom DescTools BreslowDayTest KendallTauA StuartTauC KendallTauB MHChisqTest
-#' @importFrom dplyr relocate mutate
+#' @importFrom dplyr relocate mutate group_by
 #' @importFrom tibble rownames_to_column
+#' @importFrom ggforce geom_ellipse
+#' @importFrom rstatix get_summary_stats t_test
+#' @importFrom ggplot2 geom_abline coord_fixed coord_cartesian geom_segment 
+#' @importFrom ggplot2 geom_point element_blank theme labs theme_bw annotate 
+#' @importFrom ggplot2 geom_errorbar geom_vline aes ggplot 
+#' @importFrom grid arrow unit
+#' 
 NULL
 #> NULL
 
@@ -1503,7 +1510,7 @@ get_pval <- function(M){
     return(dhyper(a, mm, nn, k))
 }
 pval_total <- unlist(lapply(Mat_final, get_pval))
-data.frame("p-vlaue" = round(sum(pval_total), 4), "prob-table" = round(sum(pval_total), 4)) -> result_
+data.frame("p-vlaue" = round(sum(pval_total), 4), "prob-table" = round(prob_tab, 4)) -> result_
 result_2 <- result_
 result_2$p.vlaue <- cell_spec(result_2$p.vlaue, 
 background = ifelse(result_2$p.vlaue > 0.05, "green", "red"), color = "white", bold = T)
@@ -1659,6 +1666,7 @@ varnames = c("Var1", "Var2")){
 #' \deqn{n = \sum_{i =1}^I\sum_{j=1}^J n_{(i, ~j)},}
 #' \deqn{r = \text{Corr}(X_1, ~X_2), \quad X_1, ~ X_2 ~\text{Are two variables of contigency table}}
 #' 
+#' 
 #' @examples 
 #' \dontrun{data(table_2)
 #'     Table_Test_Result(tab = table_2)}
@@ -1757,13 +1765,14 @@ Table_Test_Result <- function(tab, Levels, idLevel = 0){
 
 
 #' The base Function of R for applying a condition on a vector at the
-#'     same time is in the form that  return is the first value of the vecotr 
-#'     This function is designed to return a vector by applying a condition on a vector.
+#'     same time is in the form that  return is the first value of the vector 
+#'     This function is designed to return a vector by applying a 
+#'     condition on a vector.
 #' 
 #' @seealso  \code{\link[base:ifelse]{base::ifelse()}}
 #' 
 #' @usage ifel(cond, x, y)
-#' @param cond Alogical value, that is TRUE or FALSE
+#' @param cond A logical value, that is TRUE or FALSE
 #' @param x if \code{cond = TRUE} return \code{x}
 #' @param y if \code{cond = FALSE} return \code{y}
 #' 
@@ -1774,3 +1783,746 @@ ifel <- function(cond, x, y){
     if(cond) return(x) else return(y)
 }
 
+
+
+#' @title Rounding vectors that have multi-type values (characters and numbers)
+#'
+#' @description  To round a vector that has both numeric values and character values, 
+#'     we know that if a vector contains characters, all the values have character 
+#'     format, but sometimes we need to round the numeric values to several decimal 
+#'     places when displaying the vector. This function is implemented to round 
+#'     numerical values in vectors that contain characters.
+#'     
+#'     
+#' 
+#' @seealso  \code{\link[base:round]{base::round()}}
+#' 
+#' @usage stats_round(x, ndigit = 4)
+#' @param x A vector, with numeric and character elements
+#' @param ndigit The number of decimal digits we want to round the numbers inside the vector
+#' 
+#' @author Habib Ezatabadi
+#' 
+#' @return A vector of the same size but with numbers rounded to an arbitrary number of decimal places.
+#' 
+#' @examples 
+#' \dontrun{stats_round(x = c("a", 2.342341, "stats9", 3.324234235), ndigit = 2)}
+#' @export 
+stats_round <- function(x, ndigit = 4) {
+    res <- unlist(lapply(x, function(a){
+        temp1 <- suppressWarnings(as.numeric(a))
+        if(is.na(temp1)) return(a) else{
+            if(temp1 > 1e+200) return(Inf) else{
+            resid <- temp1 %% 1
+            if(resid > 0) return(round(temp1, ndigit)) else return(formatC(temp1, 
+                format = "f", drop0trailing = TRUE))
+            }}
+}))
+return(res)
+}
+
+
+
+#' @title Non-Inferiority and superiority Test in cilinical Trials, for compare two Treatment
+#' 
+#' @description In order to implement non-inferiority tests and superiority tests, 
+#' in randomized clinical trials, when we want to compare two types of treatment or two types of drugs or a drug with a placebo, 
+#' there are many softwares, there are various functions in R, some From the functions used in R, 
+#' they do not have optimal outputs and even sometimes, their outputs are not very correct. In this function, 
+#' we have tried to have integrated outputs with a completely simple table, as well as adding a graph, 
+#' two non-derogatory tests. and superiority in studies designed for parallel groups.   
+#' 
+#' @details for Non-Inferiority and Superiority Test for rates and continuous values like
+#' Hypertension, We set a null value based on previous clinical studies or articles and studies already done, then:
+#' \describe{
+#' \item{Non-Inferiority}{If a treatment is better, i.e. that treatment has a larger mean in 
+#' recorded observations or a higher rates, our test is defined as:
+#' \deqn{\text{for rates}: \quad \begin{cases}H_0: & p_1 - p_2 \leq \delta \\
+#' H_1: & p_1 - p_2 > \delta, \end{cases} \quad \delta < 0.
+#' }
+#' \deqn{
+#' \text{or for continuous values}: \quad \begin{cases}H_0: & \text{Treat}_1 - \text{Treat}_2 \leq \delta \\
+#' H_1: & \text{Treat}_1 - \text{Treat}_2 > \delta \end{cases} \quad \delta < 0.
+#' }
+#' If a treatment is better, i.e. that treatment has a smaller mean in the 
+#' recorded observations or a smaller rates, our test is defined as:
+#' \deqn{\text{for rates}: \quad \begin{cases}H_0: & p_1 - p_2 \geq \delta \\
+#' H_1: & p_1 - p_2 < \delta, \end{cases} \quad \delta > 0. }
+#' \deqn{
+#' \text{or for continuous values}: \quad \begin{cases}H_0: & \text{Treat}_1 - \text{Treat}_2 \geq \delta \\
+#' H_1: & \text{Treat}_1 - \text{Treat}_2 < \delta \end{cases} \quad \delta > 0.
+#' }
+#' }
+#' \item{Superiority}{If a treatment is better, i.e. that treatment has a larger mean in 
+#' recorded observations or a higher rates, our test is defined as:
+#' \deqn{\text{for rates}: \quad \begin{cases}H_0: & p_1 - p_2 \leq \delta \\
+#' H_1: & p_1 - p_2 > \delta, \end{cases} \quad \delta > 0. }
+#' \deqn{
+#' \text{or for continuous values}: \quad \begin{cases}H_0: & \text{Treat}_1 - \text{Treat}_2 \leq \delta \\
+#' H_1: & \text{Treat}_1 - \text{Treat}_2 > \delta \end{cases} \quad \delta > 0.
+#' }
+#' If a treatment is better, i.e. that treatment has a smaller mean in the 
+#' recorded observations or a smaller rates, our test is defined as:
+#' \deqn{\text{for rates}: \quad \begin{cases}H_0: & p_1 - p_2 \geq \delta \\
+#' H_1: & p_1 - p_2 < \delta, \end{cases} \quad \delta < 0. }
+#' \deqn{
+#' \text{or for continuous values}: \quad \begin{cases}H_0: & \text{Treat}_1 - \text{Treat}_2 \geq \delta \\
+#' H_1: & \text{Treat}_1 - \text{Treat}_2 < \delta \end{cases} \quad \delta < 0.
+#'}
+#'}
+#' \item{Rates}{
+#' for rates we add three method in this code; 
+#' \code{"wald"}, \code{"Farrington-Manning"} and \code{"Hauck-Anderson"} for get
+#' more information about this methods 
+#' you can go to this \href{https://1drv.ms/b/s!AjGgWTomcc6MgRw7N9ZTMJjKAEvO?e=SMFLgT}{link.}
+#' }
+#' \item{Continuous Values}{
+#' for continuous values we implement a \code{T Test}:
+#' \deqn{
+#' \bar{x}_1 = \frac{1}{n_1}\sum_{i = 1}^{n_{1}} x_{i_{1}}, \quad \bar{x}_2 = \frac{1}{n_{2}}\sum_{i = 1}^{n_2} x_{i_{2}}
+#' }
+#' \deqn{
+#' \bar{x}_1 \sim \mathcal{N}(\mu_1, \frac{\sigma_1}{n_1}), \quad \bar{x}_2 \sim \mathcal{N}(\mu_2, \frac{\sigma_2}{n_2}),
+#' }
+#' \deqn{
+#' \text{we want to test}:\quad \begin{cases}H_0: & \mu_1 - \mu_2 \leq \delta \\
+#' H_1: & \mu_1 - \mu_2 > \delta\end {cases},
+#' }
+#' \deqn{
+#' \text{if}~~ \sigma_1 = \sigma_2 \implies S^2_{pooled} = \frac{(n_1 -1)S^2_1 + (n_2 -1)S^2_2}{n_1 + n_2 -2},}
+#' \deqn{
+#' S^2_1 = \frac{1}{n_1 - 1}\sum_{i = 1}^{n_1}(x_{i_{1}} - \bar{x}_1)^2,}
+#' \deqn{
+#' S^2_2 = \frac{1}{n_2 - 1}\sum_{i = 1}^{n_2}(x_{i_{2}} - \bar{x}_2)^2, \implies
+#' }
+#' \deqn{
+#' \text{Test Statistics}: \frac{\bar{x}_1 - \bar{x}_2 - \delta}{s_{pooled}\sqrt{\frac{1}{n_1}+ \frac{1}{n_2}}} \sim \underset{\text{if}~H_0 ~\text{is TRUE}}{\sim} T_{(n_1 + n_2 - 2)}
+#' }
+#' \deqn{
+#' \text{if}~ \sigma_1 \ne \sigma_2 \implies
+#' }
+#' We have to use Welch-Satterthwaite, so for more information about this statistics, go to this \href{https://en.wikipedia.org/wiki/Welch%27s_t-test}{link.}
+#' }
+#'}
+#' 
+#' @usage Inferiority_superiority_test_pa(
+#'     dataType  = "binary",  Dat, alpha = .05, 
+#'     Method_estimate_for_binary_data = "fm", 
+#'     margin, reff = 1, better = "right", Test_Method = "N", 
+#'     Name_groups = c(group1 = "standard", group2 = "new")
+#'     )
+#' @param dataType It can take two values, \code{c("binary", "continuous")}, to tell the 
+#'     function whether our data is to compare rates or continuous values.
+#' 
+#' @param Dat is our data set, the thing about it is that the data must have two columns, 
+#'      the first column is related to values and the second column is related to factors, 
+#'      that is, there must be a specific factor in the second column, which determines that observation 
+#'      It is related to which treatment, the next point is that the agents can only be of two types. 
+#'      And also for binary data, the value column should have only  \code{TRUE} (success) and \code{FALSE} (failure) values for each observation.
+#' 
+#' @param alpha \eqn{0 < \alpha < 1}, level of test.
+#' 
+#' @param Method_estimate_for_binary_data It can take 3 values, \code{c("fm", "ha", "wald")}, 
+#'     it should be noted that \code{"fm"} abbreviated of \code{"Farrington-Manning"} Method, 
+#'     \code{"ha"} abbreviated of \code{"Hauck-Anderson"} method, and \code{"wald"} implements the famous \code{"wald"} method for binary data.
+#' 
+#' @param margin \eqn{\delta,~H_0: p_1 - p_2 \leq \delta ~Vs~H_1: p_1 - p_2 > \delta~} Null-value for more information about margin in Non-Inferiority 
+#'     
+#' and Superiority test go to \code{details.}
+#' @param reff It takes two values \code{reff = 1, reff = 2}, 1 means that we want to subtract the average of the second community from the first and 2 means that 
+#'     we want to subtract the difference of the first community from the second. if \code{reff = 1} then \eqn{H_0: \mu_1 - \mu_2 \leq \delta}
+#'     \code{reff = 2} then \eqn{H_0: \mu_2 - \mu_1 \leq \delta}.
+#' 
+#' @param better  It takes two values \code{c("left", "right")}. Maybe for certain tests, 
+#'     a lower value indicates a better treatment, in which case we should give this argument the \code{"left"} value, 
+#'     and if a higher value indicates a better treatment, by default, this argument contains the \code{"right"} value.
+#' 
+#' @param Test_Method getting two value \code{c("N", "S")} N infer to \code{"Non-Inferiority Test"} and S infer to \code{"Superiority Test"}. 
+#' 
+#' @param Name_groups A Vector with Two element, name of group 1 and name of group 2. 
+#'     It is necessary that the values of this argument be quantified. By default, 
+#'     the values of this argument are \code{c("standard", "new")} standard for group 1 and new for group two.
+#' 
+#' @return A List of Three Components 
+#'     \tabular{ll}{
+#'     \code{TestResult}:\tab "htest" class that contains result of test\cr
+#'     \code{plotResult}:\tab Plot of Test \cr
+#'     \code{TestTable}:\tab A Html table for show results \cr
+#' }
+#' 
+#' @return TestResult that from class "htest" contains below members:\
+#' \tabular{ll}{
+#'     \code{statistic}:\tab the value of the Z-statistic\cr
+#'     \code{parameter}:\tab delta, rate difference (group 1 - group 2) under the null hypothesis\cr
+#'     \code{p.value}:\tab the p-value for the Farrington-Manning test\cr
+#'     \code{null.value}:\tab rate difference (group 1 - group 2) under the null\cr
+#'     \code{alternative}:\tab a character string indicating the alternative hypothesis\cr
+#'     \code{method}:\tab a character string indicating the exact method employed\cr
+#'     \code{data.name}:\tab a character string giving the names of the data used\cr
+#'     \code{estimate}:\tab the estimated rate difference (maximum likelihood)\cr
+#'     \code{conf.int}:\tab a confidence interval for the rate difference\cr
+#'     \code{sample.size}:\tab the total sample size used for the test\cr
+#' }
+#' @examples \dontrun{
+#'     dat <- data(HyperTension)
+#'     Inferiority_superiority_test(dataType = "continuous", Dat = dat, alpha = 0.05,
+#'     margin = 5, reff = 1, better = "right", Test_Method = "N", 
+#'     Name_groups  = c(group1 = "standard", group2 = "new"))
+#' }
+#' 
+#' @author Habib Ezatabadi
+#' 
+#' @export 
+Inferiority_superiority_test_pa <- function(
+dataType  = "binary",  Dat, alpha = .05, 
+Method_estimate_for_binary_data = "fm", 
+margin, reff = 1, better = "right", Test_Method = "N", 
+Name_groups = c(group1 = "standard", group2 = "new")){
+    conf.low <- xmax <- samp_diff <- conf.high <- value <- group <- Groups <- xmin <- . <- NULL
+    get_delta <- function(margin){
+        a <- margin; alter <- "greater"
+        if(better == "right" && Test_Method == "N") a = -margin else{
+            if(better == "left" && Test_Method == "S") a = -margin; alter <-  "less"
+        }
+        if(better == "left" && Test_Method == "N" ) alter = "less"
+        return(c(alternative = alter, Delta = a))
+    }
+    dl_al <- get_delta(margin)
+    alter <- dl_al[1]; delta <- dl_al[2] %>% as.numeric;
+    LOWER <- ifelse(alter == "greater", FALSE, TRUE)
+    name_groups <- Dat[, 2] %>% unlist %>% unique %>% as.character
+    if(name_groups %>% length != 2) stop("group factor must be two groups")
+    if(dataType == "binary"){
+    val <- Dat[, 1] %>% unlist 
+    if(!all(is.logical(val))) stop("for binary data, just accepted TRUE for (succeed) and FALSE for (fail)")
+    }
+    var1 <- Dat[, 1] %>% unlist
+    var2 <- Dat[, 2] %>% unlist
+    var11 <- var1[var2 == name_groups[1]]; n1 <- length(var11);
+    var12 <- var1[var2 == name_groups[2]]; n2 <- length(var12); 
+    Dat <- data.frame(value = c(var11, var12), Groups = rep(name_groups, c(n1, n2)))
+    x <- subset(Dat, Groups == name_groups[1], select = value) %>% unlist %>% setNames(NULL)
+    y <- subset(Dat, Groups == name_groups[2], select = value) %>% unlist %>% setNames(NULL)
+    Method <- ifelse(Test_Method == "N", "Non-Inferiority", "Superiority")
+    if(dataType == "binary"){
+
+        get_estimate_method <- function(x){
+        Estimate_Method <- if(x == "fm") return("Farrington-Manning")else{
+            if(x == "ha") return("Hauck-Anderson") else return("wald")
+        }
+        } 
+        estimate_binary_method <- get_estimate_method(Method_estimate_for_binary_data)
+        if(reff == 1){
+            group1 = x
+            group2 = y}else{group2 = x; group1 = y}
+        Test_Result <- list()
+        class(Test_Result) <- "htest"
+        Test_Result$null.value <- c(margin)
+        names(Test_Result$null.value) <- c("rate difference (group 1 - group 2)")
+        Test_Result$alternative <- c(alter)
+        str1 <- sprintf("%s test for rates according to %s Approach", Method, estimate_binary_method)
+        Test_Result$method <- c(str1)
+        Test_Result$data.name <- sprintf("group 1: %s, group 2: %s", Name_groups[1], Name_groups[2]) 
+        n11 <- sum(group1); n12 <- sum(!group1); 
+        n21 <- sum(group2); n22 <- sum(!group2);
+        n <- n11 + n12 + n21 + n22; n1. <- n11 + n12; n2. <- n21 + n22; 
+        n.1 <- n11 + n21; n.2 <- n12 + n22
+        Test_Result$sample.size <- c(n)
+        names(Test_Result$sample.size) <- "sample size"
+        Test_Result$estimation.method <- c(estimate_binary_method)
+        p1 <- mean(group1); p2 <- mean(group2)
+        dhat <- p1 - p2
+        Test_Result$estimate <- c(dhat)
+        names(Test_Result$estimate) <- c("rate Difference: (group1 - group2)")
+        get_ci_pval_zscore <- function(xx){
+            sd_wald <- sqrt(p1 * (1-p1)/(n1.) + p2 * (1-p2)/(n2.))
+            sd_ha <- sqrt(p1 * (1-p1)/(n1.-1) + p2 * (1-p2)/(n2.-1))
+
+            c_ha <- 1 / (2 * min(c(n1., n2.)))
+            ## fm: estimate sd("fm-method")
+
+            theta <- n2./n1.; d <- p1 * abs(delta) * (1-abs(delta));
+            c_fm <- abs(delta)^2 - abs(delta) * (2*p1 + theta + 1) + p1 + theta * p2
+            b <- -(1 + theta  + p1 + theta * p2 - abs(delta) * (theta + 2))
+            a <- 1 + theta
+            v <- b^3 / (3 * a)^3 - (b * c_fm) / (6 * a^2) + d/(2 * a)
+            u <- sign(v) * sqrt(b^2 / (3 * a)^2 - c_fm / (3 * a))
+            w <- (pi + acos(v / u^3))/3
+            p_fm_1 <- 2 * u * cos(w) - b/(3 * a); p_fm_2 <- p_fm_1 + abs(delta)
+            sd_fm <- sqrt(p_fm_1 * (1 - p_fm_1)/n1. + p_fm_2 * (1 - p_fm_2)/n2.)
+            ###################################
+            # zwald 
+            z_wald <- (dhat - delta)/sd_wald; 
+            # z Hauck-Anderson
+            z_ha <- (dhat - delta + c_ha)/sd_ha
+            # z Farrington-Manning
+            z_fm <- (dhat - delta) / sd_fm 
+            # conf_int wald 
+            zz <- qnorm(alpha/2, lower.tail = F)
+            ci_wald <- c(dhat - zz * sd_wald, dhat + zz * sd_wald)
+            ci_ha <- c(dhat - c_ha - zz * sd_ha, dhat + c_ha + zz * sd_ha)
+            ci_fm <- c(dhat - zz * sd_fm, dhat + zz * sd_fm)
+            pval_wald <- pnorm(z_wald, lower.tail = LOWER)
+            pval_ha <- pnorm(z_ha, lower.tail = LOWER)
+            pval_fm <- pnorm(z_fm, lower.tail = LOWER)
+            temp_wald <- c(sd_wald, z_wald, pval_wald, ci_wald)
+            temp_ha <- c(sd_ha, z_ha, pval_ha, ci_ha)
+            temp_fm <- c(sd_fm, z_fm, pval_fm, ci_fm)
+            result <- switch(xx, 
+            "fm" = temp_fm, 
+            "ha" = temp_ha, 
+            temp_wald)
+            return(result)
+        }
+        temp1 <- get_ci_pval_zscore(Method_estimate_for_binary_data)
+        Test_Result$statistic <- temp1[2]
+        names(Test_Result$statistic) <- "Z-statistic"
+        Test_Result$p.value <- temp1[3]
+        
+        Test_Result$conf.int <- temp1[4:5]
+        attr(Test_Result$conf.int, "conf.level") <- 1- alpha
+        #############################################################
+
+        p_group1 <- p1; p_group2 <- p2; 
+        n <- Test_Result$sample.size; p_diff <- Test_Result$estimate;
+        Z_statistic = Test_Result$statistic
+        conf_int <- Test_Result$conf.int; p_value <- Test_Result$p.value
+        row_1 <- c("p group1", "n group1", "p group2", "n group2", 
+        "rate difference (group1 - group2)", "Z-Statistic", "p-value", 
+       "CI-LowerBond", "CI-UpperBond")
+       row_2 <- c(p_group1, n1, p_group2, n2, p_diff, Z_statistic, p_value, conf_int[1], 
+       conf_int[2]) %>% setNames(NULL) %>% round(4)
+       word <- ifelse(p_value < alpha, "Accepted", "Rejected")
+       Footnote <- sprintf("based on p-value = %.4f, therefore %s Test %s, alpha = %.3f", p_value, Method, word, alpha)
+       Footnote2 <- sprintf("Confidence Interval is %.1f %s", (1-alpha) * 100, "%")
+       Footnote3 <- "if cell of p-value is red, means that: p-value < alpha"
+
+       Title <- str1
+       Table1 <- rbind(row_1, row_2) %>% t %>% as.data.frame %>% setNames(NULL) 
+       Table_12 <- Table1
+       Table_12[7, 2] = cell_spec(Table_12[7, 2], background  = ifelse(as.numeric(Table_12[7, 2]) > alpha,
+        "white", "red"), 
+        color = ifelse(as.numeric(Table_12[7, 2]) > alpha, "black", "yellow"))
+       Table_12 %>%
+           kbl(caption = Title, escape = F) %>%
+           kable_paper("hover", full_width = F) %>%
+           column_spec(1, background = "green", 
+              color = "white", 
+              italic = T, bold = T, width = "15em") %>%
+           column_spec(2, bold = T) %>%
+           pack_rows(group_label = sprintf("Confidence Interval; Level is %.1f %s", (1-alpha) * 100, "%"), 
+           start_row = 8, end_row = 9, 
+           label_row_css = "border-top: 3px solid;", italic = TRUE,
+           color = "#d48a00") %>%
+           footnote(general =  Footnote3,
+           number = c(Footnote, Footnote2)) -> Table_kable
+
+                   ##############################################################################
+
+        dat_plot <- data.frame(x = c(p_diff), y = c(2), xmin = c(conf_int[1]), xmax = c(conf_int[2]))
+          
+        P <- dat_plot %>%
+            ggplot(aes(x, y)) + 
+            geom_point(size = 20, col = "red") + 
+            geom_vline(xintercept = margin, linetype = 2, color = "red", linewidth = 2) + 
+            geom_vline(xintercept = -margin, linetype = 2, color = "red", linewidth = 2) + 
+            geom_errorbar(aes(xmin = xmin, xmax = xmax), color = "darkblue", width = .2, size = 4) + 
+            coord_cartesian(ylim = c(1, 3)) + 
+            annotate(geom = "text", x = margin, y = 2.5, 
+            label = ifelse(margin < 0, "-~delta", "+~delta"), 
+            size = 20, parse = T) +
+            annotate(geom = "text", x = -margin, y = 2.5, 
+            label = ifelse(margin < 0, "+~delta", "-~delta"), 
+            size = 20, parse = T) +
+            annotate(geom = "text", x = p_diff, y = 2.15, 
+            label = "CI for difference Ratio", size = 15)+
+            theme_bw() + 
+            labs(title = str1, 
+            caption = sprintf("%s Test %s", Method, word), x = "Ratio Difference", y = "") + 
+            theme(axis.ticks.y = element_blank(), axis.text.y = element_blank())
+            final_result <- list(TestResult = Test_Result, 
+            TableResult = Table_kable, 
+            plotResult = P)
+            return(final_result)
+       }else{
+
+       #######################################
+
+          TestRes <- list()
+            class(TestRes) <- "htest"
+            TestRes$null.value <- c(delta)
+            
+            n <- nrow(Dat)
+            Dat %>%
+            group_by(Groups) %>%
+            get_summary_stats(value, type = "common") %>%
+            mutate(variable = NULL, variables = Groups) %>%
+            relocate("variables", .before = Groups) %>%
+            mutate(Groups = NULL) -> listResult; 
+            if(reff == 1) REFF = name_groups[1] else REFF = name_groups[2]
+            Dat %>%
+            t_test(value ~ Groups, mu = delta, alternative = alter, 
+            detailed = T, ref.group = REFF) -> tt_result
+            CI_satter <- c(tt_result$conf.low, tt_result$conf.high)
+             tt_result %>% unlist -> testResult 
+            CI_satter_two_sided <- Dat %>% t_test(value ~ Groups, mu = delta, detailed = T, 
+            ref.group = REFF) %>% dplyr::select(conf.low, conf.high) %>% unlist
+
+            names(TestRes$null.value) <- sprintf("Mean Difference: %s - %s", REFF, 
+            setdiff(Name_groups, c(REFF)))
+
+            TestRes$alternative <- c(alter)
+            str1 <- sprintf("%s Test: According T test for Mean Difference",Method)
+            TestRes$method <- c(str1)
+            TestRes$data.name <- c(sprintf("group 1: %s, group 2: %s", Name_groups[1], 
+            Name_groups[2]))
+
+            TestRes$sample.size <- c(n)
+            names(TestRes$sample.size) <- "sample size"
+            TestRes$estimation.method <- c("T Test")
+            TestRes$estimate <- c(testResult[1]) %>% as.numeric
+            names(TestRes$estimate) <- c(sprintf("Mean Difference: (%s - %s)", 
+            REFF, setdiff(Name_groups, c(REFF))))
+
+            Fvlaue <- var.test(x, y)$statistic
+            pVal <- var.test(x, y)$p.value
+            Nam <- c(paste(REFF, setdiff(name_groups, c(REFF)), sep = " - "), REFF, 
+            setdiff(name_groups, c(REFF)), "n1", "n2", "t_statistic", "p-value", 
+            "df", "CI_Lower_bond", "CI_Upper_bond", "Margin")
+            TEST_result_satt <- testResult[c(1, 2, 3, 7, 8, 9, 10, 11, 12, 13)]
+
+
+            TEST_result_satt[length(TEST_result_satt) + 1] <- delta
+            cbind(Nam, TEST_result_satt) %>% as.data.frame %>% setNames(NULL) -> testResult2
+            rownames(testResult2) <- NULL
+            testResult2 %>% t %>% as.data.frame %>% setNames(.[1, ]) %>% .[-1, ] %>% unlist %>% 
+            stats_round %>% as.data.frame  %>% rownames_to_column(var = "nam") %>% t %>% as.data.frame %>% 
+            setNames(.[1, ]) %>% .[-1, ] -> satter_result
+            pvalue_satter <- satter_result[, 7] %>% as.numeric %>% round(4)
+            word_satt <- ifelse(pvalue_satter < alpha, "Accepted", "Rejected")
+
+
+            Dat %>%
+            t_test(value ~ Groups, mu = delta, alternative = alter, 
+            detailed = T, ref.group = REFF, var.equal = T) -> tt_result_2
+            CI_equal <- c(tt_result_2$conf.low, tt_result_2$conf.high)
+             tt_result_2 %>% unlist -> simple_result1 
+            CI_equal_two_sided <- Dat %>% t_test(value ~ Groups, mu = delta, detailed = T, 
+            ref.group = REFF, var.equal = T) %>% dplyr :: select(conf.low, conf.high) %>% unlist
+
+            TEST_result_equal <- simple_result1[c(1, 2, 3, 7, 8, 9, 10, 11, 12, 13)]
+           
+
+            TEST_result_equal[length(TEST_result_equal) + 1] <- delta
+            cbind(Nam, TEST_result_equal) %>% as.data.frame %>% setNames(NULL) -> testResult2_equal
+            rownames(testResult2_equal) <- NULL
+            testResult2_equal %>% t %>% as.data.frame %>% setNames(.[1, ]) %>% .[-1, ] %>% unlist %>% 
+            stats_round %>% as.data.frame  %>% rownames_to_column(var = "nam") %>% t %>% as.data.frame %>% 
+            setNames(.[1, ]) %>% .[-1, ] -> equal_result
+            pvalue_equal <- equal_result[, 7] %>% as.numeric %>% round(4)
+            word_equal <- ifelse(pvalue_equal < alpha, "Accepted", "Rejected")
+
+
+            result_stat <- ifel(pVal < 0.05, 
+                c(satter_result[, c(2, 3)] %>% unlist, tstatistics = satter_result[, 6] %>% unlist, 
+                pvalue = satter_result[, 7] %>% unlist, df = satter_result[, 8] %>% unlist, ci_low = CI_satter[1], 
+                ci_high = CI_satter[2]), 
+                c(equal_result[, c(2, 3) %>% unlist], tstatistics = equal_result[, 6] %>% unlist, 
+                pvalue = equal_result[, 7] %>% unlist, df = equal_result[, 8] %>% unlist, ci_low = CI_equal[1], 
+                ci_high = CI_equal[2])) %>% as.numeric
+            
+
+               TestRes$statistic <- result_stat[3] 
+               names(TestRes$statistic) <- "T-statistic"
+               TestRes$p.value <- result_stat[4]
+               TestRes$parameters <- result_stat[c(1, 2, 5)]
+               names(TestRes$parameters) <- c(c(REFF), setdiff(Name_groups, REFF),"df")
+               TestRes$conf.int <- result_stat[c(6, 7)]
+               attr(TestRes$conf.int, "conf.level") <- 1- alpha
+
+           final_result <- rbind(equal_result, satter_result) %>%
+            as.data.frame 
+            
+            var_nams <- c("Assumption Equal variance", "Welch-Satterthwaite")
+            final_result <- final_result %>% mutate(Test_method = var_nams) %>%
+            relocate("Test_method", .before = Nam[1])
+            Nam <- names(final_result)
+            add_F_test <- data.frame(v1 = c("F Test for equal variance", ""), 
+            v2 = c("F-value", Fvlaue %>% round(4)), 
+            v3 = c("p-value", pVal %>% round(4)))
+
+            mtemp <- matrix("", 2, 9)
+            add_F_test2 <- cbind(add_F_test, mtemp) %>% as.data.frame %>% 
+            setNames(NULL)
+            rownames(add_F_test2) <- NULL
+            rownames(final_result) <- NULL
+            add_F_test3 <- add_F_test2 %>% setNames(Nam)
+            final_result_2 <- rbind(final_result, add_F_test3)
+
+            Title <- sprintf("Table of %s Test Results", Method)
+
+            Footnote_satter <- sprintf("Welch-Satterthwaite: based on p-value = %.4f, therefore %s Test %s, alpha = %.3f", pvalue_satter, Method, word_satt, alpha)
+            Footnote_equal <- sprintf("Assumption Equal Variance: based on p-value = %.4f, therefore %s Test %s, alpha = %.3f", pvalue_equal, Method, word_equal, alpha)
+            Footnote2 <- sprintf("Confidence Interval is %.1f %s", (1-alpha) * 100, "%")
+            fword1 <- ifelse(pVal < 0.05, "Rejected", "Accepted"); fword2 <- ifelse(pVal < .05, "Welch-Satterthwaite", "Assumption Equal Variance")
+            Footnote4 <- sprintf("Test for Homogeniety of Variance; H0 is %s. therefore, we have to look at the %s test results", fword1, fword2)
+
+            final_result_3 <- final_result_2
+            
+            final_result_2 %>%            
+            kbl(caption = Title, escape = F) %>%
+            kable_paper("hover", full_width = F) %>%
+            row_spec(0, background = "green", 
+              color = "white", 
+              italic = T, bold = T)  %>%
+              row_spec(1, background = "white", 
+              bold = T, color = "black") %>%
+            row_spec(2, background = ifelse(pVal < 0.05, "red", "white"), 
+            bold = T, color = ifelse(pVal < 0.05, "white", "black")) %>% 
+            pack_rows(group_label = sprintf("Test of Homogeneity of Variance, level of test = 0.05"), 
+                start_row = 3, end_row = 4, 
+            label_row_css = "border-top: 3px solid;", italic = TRUE,
+           color = "#d48a00") %>%
+           row_spec(3, background = "green", color = "white", bold = T, 
+           italic = T) %>%
+           row_spec(4, background = ifelse(pVal < 0.05, "red", "#bebebeb0"), 
+            bold = T, color = ifelse(pVal < 0.05, "white", "black")) %>%
+            footnote(general =  Footnote4,
+            number = c(Footnote_equal, Footnote_satter, Footnote2)) -> Table_kable
+
+
+            Word <- ifelse(pVal < 0.05, word_satt, word_equal)
+            ind_deter <- which(CI_equal > 1e+16)
+            CI_equal[ind_deter] <- CI_equal_two_sided[ind_deter]
+            CI_satter[ind_deter] <- CI_satter_two_sided[ind_deter]
+            dat_plot_c <- data.frame(samp_diff = rep(TestRes$estimate, 2), y = c(1.5, 1.8), 
+            xmin = c(CI_equal[1], CI_satter[1]), 
+            xmax = c(CI_equal[2], CI_satter[2]), group = c("Assumption Homogeniety Variance", "Welch-Satterthwaite"))  
+
+
+            P_c <- dat_plot_c %>%
+            ggplot(aes(x = samp_diff, y = y, group = group)) + 
+            geom_point(size = 15, shape = 16) + 
+            geom_vline(xintercept = delta, linetype = 2, color = "red", linewidth = 2) + 
+            geom_vline(xintercept = -delta, linetype = 2, color = "red", linewidth = 2) + 
+            geom_segment(aes(x = ifel(alter == "greater", xmin, xmax)
+            , y = y, yend = y, xend = ifel(alter == "greater", xmax, xmin), 
+            color = group), 
+            linewidth = 4, arrow = arrow(length = unit(0.3, "inches")), 
+            lineend = "square", linejoin = "round") +
+            coord_cartesian(ylim = c(1, 2.1), xlim = range(c(-abs(delta) - 1, abs(delta) + 1))) + 
+            annotate(geom = "text", x = delta, y = 2.1, 
+            label = ifelse(delta < 0, "-~delta", "+~delta"), 
+            size = 20, parse = T) +
+            annotate(geom = "text", x = -delta, y = 2.1, 
+            label = ifelse(delta < 0, "+~delta", "-~delta"), 
+            size = 20, parse = T) + 
+            theme_bw() + 
+            labs(title = sprintf("plot of CI for %s Test", Method), 
+            caption = sprintf("%s Test %s", Method, Word), 
+            x = "sample Difference", y = "Test Method") + 
+            theme(legend.position = 'bottom', 
+            legend.title = element_blank(), 
+            axis.ticks.y = element_blank(), axis.text.y = element_blank() )
+
+            
+            finall_Result <- list(TtestResult = TestRes, 
+            HomogeneityTest = add_F_test2, TestPlot = P_c, Test_Table = Table_kable)
+            return(finall_Result)
+            }
+
+    }
+
+
+
+#'@title  HyperTension Data
+#'
+#' @description 
+#'     A dataset with two variables and 200 observations.
+#'
+#' \itemize{
+#'     \item value: The variable in which blood pressure 
+#'         measurement values are stored in two groups of standard treatment and new treatment.
+#'     \item Groups: The name of the treatment group
+#' }
+#'
+#' @docType data
+#' @keywords datasets
+#' @name HypterTension
+#' @usage data(HyperTension)
+#' @format dataframe
+"HyperTension"
+
+
+
+
+
+#' @title rct_binary_data_1 Data
+#' 
+#' @description 
+#'     A dataset with two variables and 114 observations.
+#' 
+#' \itemize{
+#'     \item values: Recovery or non-recovery for the treatment group.
+#'     \item group: The name of the treatment group
+#' }
+#'
+#' @docType data
+#' @keywords datasets
+#' @name rct_binary_data_1
+#' @usage data(rct_binary_data_1)
+#' @format dataframe
+"rct_binary_data_1"
+
+
+
+
+
+
+#' @title rct_continuous_data_2 Data
+#' 
+#' @description 
+#'     A dataset with two variables and 21 observations.
+#' 
+#' \itemize{
+#'     \item values: Measured criteria for each patient's recovery 
+#'     \item treat: The Type of Treatment
+#' }
+#'
+#' @docType data
+#' @keywords datasets
+#' @name rct_continuous_data_2
+#' @usage data(rct_continuous_data_2)
+#' @format dataframe
+"rct_continuous_data_2"
+
+
+
+
+#' @title rct_continuous_data_3 Data
+#' 
+#' @description 
+#'     A dataset with two variables and 22 observations.
+#' 
+#' \itemize{
+#'     \item values: Measured criteria for each patient's recovery 
+#'     \item treat: The Type of Treatment
+#' }
+#'
+#' @docType data
+#' @keywords datasets
+#' @name rct_continuous_data_3
+#' @usage data(rct_continuous_data_3)
+#' @format dataframe
+"rct_continuous_data_3"
+
+
+
+
+#' @title rct_binary_data_2 Data
+#' 
+#' @description 
+#'     A Table with 3 variables.
+#' 
+#' \itemize{
+#'     \item drug: A type of drug 
+#'     \item alive: alive = 1, death = 0
+#'     \item count number of patients that alive or death.
+#' }
+#'
+#' @docType data
+#' @keywords datasets
+#' @name rct_binary_data_2
+#' @usage data(rct_binary_data_2)
+#' @format dataframe
+"rct_binary_data_2"
+
+
+
+
+
+#' @title rct_binary_data_3 Data
+#' 
+#' @description 
+#'     A Table with 3 variables.
+#' 
+#' \itemize{
+#'     \item method_treat: A type of Treatment 
+#'     \item state_life: alive = 1, death = 0
+#'     \item count number of patients that alive or death.
+#' }
+#'
+#' @docType data
+#' @keywords datasets
+#' @name rct_binary_data_3
+#' @usage data(rct_binary_data_3)
+#' @format dataframe
+"rct_binary_data_3"
+
+
+
+
+
+
+
+#' @title Confidence ellipse for bivariate normal
+#' 
+#' @description To draw confidence ellipses for the mean of a two-variable normal distribution, 
+#' there are functions in R, but none of them are theoretically accurate. Here, we have tried to draw this 
+#' confidence ellipse in accordance with the academic texts.
+#' 
+#' @usage draw_ellipse_ci(S, xbar, alpha = .05, n = 100)
+#'
+#' @param S The Covariance Matrix
+#' 
+#' @param xbar sample Mean
+#' 
+#' @param alpha \eqn{1-\alpha} is level of CI.
+#' 
+#' @param n number of observaions
+#' 
+#' @return A plot that draw a ellipse with its diagonals and show sample Mean in center of that.
+#' 
+#' @references Johnson, R. A., & Wichern, D. W. (1992). Applied multivariate statistical analysis. New Jersey, 405.
+#' 
+#' @author Habib Ezatabadi
+#' 
+#' @examples 
+#' \dontrun{
+#'     S <- matrix(c(1, -1, -1, 4), 2, 2)
+#'     xbar <- c(0, 0)
+#'     draw_ellipse_ci(S = S, xbar = xbar, alpha = .05, n = 100)
+#' }
+#'
+#' @export 
+draw_ellipse_ci <- function(S, xbar, alpha = .05, n = 100){
+    x0 <- xbar[1]; y0 <- xbar[2]
+    la <- eigen(S)$values
+    vecs <- eigen(S)$vectors
+    l1 <- la[1]; l2 <- la[2];
+    vec1 <- vecs[, 1]; vec2 <- vecs[, 2]
+    theta <- asin(vec1[2])
+    cc <- (2 * (n-1))/(n * (n - 2)) * qf(1-alpha, 2, n-2)
+    a <-  sqrt(cc * l1)
+    b <- sqrt(cc * l2)
+
+
+    m1 <- -vec1[2] / vec1[1]
+    m2 <- -vec2[2] / vec2[1]
+
+    intercept1 <- xbar[2] - m1 * xbar[1]
+    intercept2 <- xbar[2] - m2 * xbar[1]
+
+    P <- ggplot() + 
+    geom_ellipse(aes(x0 = x0, y0 = y0, a = a, b = b, 
+               angle = theta), linewidth = 1.2, col = "darkblue") + coord_fixed() + 
+    theme_bw()
+
+    P + geom_abline(slope = m1, intercept = intercept1, 
+                col = 'red', linewidth = 1, linetype = 2) + 
+    geom_abline(slope = m2, intercept = intercept2, 
+              col = "purple", linetype = 2, linewidth = 1) -> P1
+    P2 <- P1 + annotate(geom = "point", x = xbar[1], y = xbar[2], 
+              size = 5, col = "red")            
+    return(P2)
+}
