@@ -1813,10 +1813,11 @@ stats_round <- function(x, ndigit = 4) {
         temp1 <- suppressWarnings(as.numeric(a))
         if(is.na(temp1)) return(a) else{
             if(temp1 > 1e+200) return(Inf) else{
+                if(temp1 < -1e+200) return(-Inf) else{
             resid <- temp1 %% 1
             if(resid > 0) return(round(temp1, ndigit)) else return(formatC(temp1, 
                 format = "f", drop0trailing = TRUE))
-            }}
+            }}}
 }))
 return(res)
 }
