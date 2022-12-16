@@ -47,7 +47,7 @@ and if a higher value indicates a better treatment, by default, this argument co
 It is necessary that the values of this argument be quantified. By default,
 the values of this argument are \code{c("standard", "new")} standard for group 1 and new for group two.}
 
-\item{data_list}{This is A list; if \code{Dat == NA}, this armument can handle data for both binary and continuous data,
+\item{data_list}{This is A list; if \code{Dat == NA}, this argument can handle data for both binary and continuous data,
 For binary data, this list takes 4 values, N11, N12, N21 and N22, of course, the order of input must be exactly the same,
 where N11 refers to the number of successes related to the first group and N12 refers to the number of failures in the first group.
 N21 refers to the number of successes of the second group and N22 refers to the number of failures of the second group,
