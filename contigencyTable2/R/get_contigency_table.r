@@ -2015,8 +2015,8 @@ Name_groups = c(group1 = "standard", group2 = "new"), data_list = NA){
         data_list argument for more information about valid data go to help function")
         v1 <- ifel(1 * temp1 == 0, var1, var2)
         v2 <- ifel(1 * temp2 == 0, var2, var1)
-        var11 <- v1[v1 == name_groups[1]]; n1 <- length(var11);
-        var12 <- v1[v2 == name_groups[2]]; n2 <- length(var12); 
+        var11 <- v1[v1 == Name_groups[1]]; n1 <- length(var11);
+        var12 <- v1[v2 == Name_groups[2]]; n2 <- length(var12); 
         Dat <- data.frame(value = c(var11, var12), Groups = rep(Name_groups, c(n1, n2)))
         }else{
             if(is.na(x) && dataType != "binary"){
@@ -2025,7 +2025,7 @@ Name_groups = c(group1 = "standard", group2 = "new"), data_list = NA){
                 v1 <- c(x, y2); v2 <- rep(Name_groups, c(n1, n2))
                 Dat <- data.frame(value = v1, Groups = v2)
             }else{
-                n11 <- y[[1]]; n12 <- y[[2]]; n21 <- y[[21]]; n22 <- y[22]
+                n11 <- y[[1]]; n12 <- y[[2]]; n21 <- y[[3]]; n22 <- y[[4]]
                 v1 <- rep(c(T, F), c(n11, n12)); v2 <- rep(c(T, F), c(n21, n22)); 
                 vals <- c(v1, v2); Groups <- rep(Name_groups, c(n11 + n12, n21 + n22));
                 Dat <- data.frame(value = vals, Groups = Groups)
@@ -2038,7 +2038,7 @@ Dat <- get_data1(x = Dat, y = data_list)
 
 name_groups <- Dat[, 2] %>% unlist %>% unique %>% as.character
 if(name_groups %>% length != 2) stop("group factor must be two groups")
-    if(dataType == "binary" && is.na(data_list)){
+    if(dataType == "binary" && all(is.na(data_list))){
     val <- Dat[, 1] %>% unlist %>% as.numeric
     if(setdiff(val, c(0, 1)) %>% length != 0) stop("for binary data, just accepted TRUE or 1 for (succeed) and FALSE or 0 for (fail)")
     }
@@ -2138,7 +2138,7 @@ if(name_groups %>% length != 2) stop("group factor must be two groups")
         row_1 <- c("p group1", "n group1", "p group2", "n group2", 
         "rate difference (group1 - group2)", "Z-Statistic", "p-value", 
        "CI-LowerBond", "CI-UpperBond")
-       row_2 <- c(p_group1, n1, p_group2, n2, p_diff, Z_statistic, p_value, conf_int[1], 
+       row_2 <- c(p_group1, n1., p_group2, n2., p_diff, Z_statistic, p_value, conf_int[1], 
        conf_int[2]) %>% setNames(NULL) %>% round(4)
        word <- ifelse(p_value < alpha, "Accepted", "Rejected")
        Footnote <- sprintf("based on p-value = %.4f, therefore %s Test %s, alpha = %.3f", p_value, Method, word, alpha)
