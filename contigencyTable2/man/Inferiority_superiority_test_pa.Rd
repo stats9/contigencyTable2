@@ -8,7 +8,8 @@ Inferiority_superiority_test_pa(
     dataType  = "binary",  Dat, alpha = .05, 
     Method_estimate_for_binary_data = "fm", 
     margin, reff = 1, better = "right", Test_Method = "N", 
-    Name_groups = c(group1 = "standard", group2 = "new")
+    Name_groups = c(group1 = "standard", group2 = "new"), 
+    data_list = NA
     )
 }
 \arguments{
@@ -19,7 +20,8 @@ function whether our data is to compare rates or continuous values.}
 the first column is related to values and the second column is related to factors,
 that is, there must be a specific factor in the second column, which determines that observation
 It is related to which treatment, the next point is that the agents can only be of two types.
-And also for binary data, the value column should have only  \code{TRUE} (success) and \code{FALSE} (failure) values for each observation.}
+And also for binary data, the value column should have only  \code{TRUE} (success) and \code{FALSE} (failure) values for each observation.
+if Dat take NA value, that means our data is in data_list list.}
 
 \item{alpha}{\eqn{0 < \alpha < 1}, level of test.}
 
@@ -44,6 +46,14 @@ and if a higher value indicates a better treatment, by default, this argument co
 \item{Name_groups}{A Vector with Two element, name of group 1 and name of group 2.
 It is necessary that the values of this argument be quantified. By default,
 the values of this argument are \code{c("standard", "new")} standard for group 1 and new for group two.}
+
+\item{data_list}{This is A list; if \code{Dat == NA}, this armument can handle data for both binary and continuous data,
+For binary data, this list takes 4 values, N11, N12, N21 and N22, of course, the order of input must be exactly the same,
+where N11 refers to the number of successes related to the first group and N12 refers to the number of failures in the first group.
+N21 refers to the number of successes of the second group and N22 refers to the number of failures of the second group,
+but if the data is continuous, this list has two members, the first of which is X or the values related to the first group and the second Y,
+which contains the values related to the second group. has it.
+in default; data_list = NA and Dat argument take data.}
 }
 \value{
 A List of Three Components
@@ -151,10 +161,11 @@ We have to use Welch-Satterthwaite, so for more information about this statistic
 }
 \examples{
 \dontrun{
-    dat <- data(HyperTension)
-    Inferiority_superiority_test(dataType = "continuous", Dat = dat, alpha = 0.05,
-    margin = 5, reff = 1, better = "right", Test_Method = "N", 
-    Name_groups  = c(group1 = "standard", group2 = "new"))
+    data(HyperTension)
+    Inferiority_superiority_test_pa(dataType = "continuous", Dat = HyperTension, alpha = 0.05,
+    margin = 5, reff = 2, better = "right", Test_Method = "N", 
+    Name_groups  = c(group1 = "standard", group2 = "new"), 
+    data_list = NA)
 }
 
 }

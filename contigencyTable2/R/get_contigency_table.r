@@ -1910,7 +1910,8 @@ return(res)
 #'     dataType  = "binary",  Dat, alpha = .05, 
 #'     Method_estimate_for_binary_data = "fm", 
 #'     margin, reff = 1, better = "right", Test_Method = "N", 
-#'     Name_groups = c(group1 = "standard", group2 = "new")
+#'     Name_groups = c(group1 = "standard", group2 = "new"), 
+#'     data_list = NA
 #'     )
 #' @param dataType It can take two values, \code{c("binary", "continuous")}, to tell the 
 #'     function whether our data is to compare rates or continuous values.
@@ -1920,6 +1921,7 @@ return(res)
 #'      that is, there must be a specific factor in the second column, which determines that observation 
 #'      It is related to which treatment, the next point is that the agents can only be of two types. 
 #'      And also for binary data, the value column should have only  \code{TRUE} (success) and \code{FALSE} (failure) values for each observation.
+#'      if Dat take NA value, that means our data is in data_list list. 
 #' 
 #' @param alpha \eqn{0 < \alpha < 1}, level of test.
 #' 
@@ -1944,6 +1946,14 @@ return(res)
 #'     It is necessary that the values of this argument be quantified. By default, 
 #'     the values of this argument are \code{c("standard", "new")} standard for group 1 and new for group two.
 #' 
+#' @param data_list This is A list; if \code{Dat == NA}, this armument can handle data for both binary and continuous data, 
+#'     For binary data, this list takes 4 values, N11, N12, N21 and N22, of course, the order of input must be exactly the same, 
+#'     where N11 refers to the number of successes related to the first group and N12 refers to the number of failures in the first group. 
+#'     N21 refers to the number of successes of the second group and N22 refers to the number of failures of the second group, 
+#'     but if the data is continuous, this list has two members, the first of which is X or the values related to the first group and the second Y, 
+#'     which contains the values related to the second group. has it.
+#'     in default; data_list = NA and Dat argument take data. 
+#' 
 #' @return A List of Three Components 
 #'     \tabular{ll}{
 #'     \code{TestResult}:\tab "htest" class that contains result of test\cr
@@ -1965,10 +1975,11 @@ return(res)
 #'     \code{sample.size}:\tab the total sample size used for the test\cr
 #' }
 #' @examples \dontrun{
-#'     dat <- data(HyperTension)
-#'     Inferiority_superiority_test(dataType = "continuous", Dat = dat, alpha = 0.05,
-#'     margin = 5, reff = 1, better = "right", Test_Method = "N", 
-#'     Name_groups  = c(group1 = "standard", group2 = "new"))
+#'     data(HyperTension)
+#'     Inferiority_superiority_test_pa(dataType = "continuous", Dat = HyperTension, alpha = 0.05,
+#'     margin = 5, reff = 2, better = "right", Test_Method = "N", 
+#'     Name_groups  = c(group1 = "standard", group2 = "new"), 
+#'     data_list = NA)
 #' }
 #' 
 #' @author Habib Ezatabadi
@@ -1978,7 +1989,8 @@ Inferiority_superiority_test_pa <- function(
 dataType  = "binary",  Dat, alpha = .05, 
 Method_estimate_for_binary_data = "fm", 
 margin, reff = 1, better = "right", Test_Method = "N", 
-Name_groups = c(group1 = "standard", group2 = "new")){
+Name_groups = c(group1 = "standard", group2 = "new"), data_list = NA){
+
     conf.low <- xmax <- samp_diff <- conf.high <- value <- group <- Groups <- xmin <- . <- NULL
     get_delta <- function(margin){
         a <- margin; alter <- "greater"
@@ -1993,15 +2005,51 @@ Name_groups = c(group1 = "standard", group2 = "new")){
     LOWER <- ifelse(alter == "greater", FALSE, TRUE)
     name_groups <- Dat[, 2] %>% unlist %>% unique %>% as.character
     if(name_groups %>% length != 2) stop("group factor must be two groups")
-    if(dataType == "binary"){
-    val <- Dat[, 1] %>% unlist 
-    if(!all(is.logical(val))) stop("for binary data, just accepted TRUE for (succeed) and FALSE for (fail)")
+    if(dataType == "binary" && is.na(data_list)){
+    val <- Dat[, 1] %>% unlist %>% as.numeric
+    if(setdiff(val, c(0, 1)) %>% length != 0) stop("for binary data, just accepted TRUE or 1 for (succeed) and FALSE or 0 for (fail)")
     }
-    var1 <- Dat[, 1] %>% unlist
-    var2 <- Dat[, 2] %>% unlist
-    var11 <- var1[var2 == name_groups[1]]; n1 <- length(var11);
-    var12 <- var1[var2 == name_groups[2]]; n2 <- length(var12); 
-    Dat <- data.frame(value = c(var11, var12), Groups = rep(name_groups, c(n1, n2)))
+
+    ############################################# edit function ###################################################
+    
+    get_data1 <- function(x = Dat, y = data_list){
+        if(!is.na(x)){
+        var1 <- Dat[, 1] %>% unlist
+        var2 <- Dat[, 2] %>% unlist
+        temp1 <- (is.factor(var1) || is.character(var1)); temp2 <- (is.factor(var2) || is.character(var2));
+        if((temp1 + temp2) != 1) stop("Dat is not valid, go to help function and insert valid data or use 
+        data_list argument for more information about valid data go to help function")
+        v1 <- ifel(1 * temp1 == 0, var1, var2)
+        v2 <- ifel(1 * temp2 == 0, var2, var1)
+        var11 <- v1[v1 == name_groups[1]]; n1 <- length(var11);
+        var12 <- v1[v2 == name_groups[2]]; n2 <- length(var12); 
+        Dat <- data.frame(value = c(var11, var12), Groups = rep(Name_groups, c(n1, n2)))
+        }else{
+            if(is.na(x) && dataType != "binary"){
+                x <- y[[1]]; y2 <- y[[2]]
+                n1 <- length(x); n2 <- length(y2);
+                v1 <- c(x, y2); v2 <- rep(Name_groups, c(n1, n2))
+                Dat <- data.frame(value = v1, Groups = v2)
+            }else{
+                n11 <- y[[1]]; n12 <- y[[2]]; n21 <- y[[21]]; n22 <- y[22]
+                v1 <- rep(c(T, F), c(n11, n12)); v2 <- rep(c(T, F), c(n21, n22)); 
+                vals <- c(v1, v2); Groups <- rep(Name_groups, c(n11 + n12, n21 + n22));
+                Dat <- data.frame(value = vals, Groups = Groups)
+            }
+        }
+        return(Dat)
+    }
+
+Dat <- get_data1(x = Dat, y = data_list)
+
+
+
+    ######################################## finish edit #########################################################
+   # var1 <- Dat[, 1] %>% unlist
+   # var2 <- Dat[, 2] %>% unlist
+   # var11 <- var1[var2 == name_groups[1]]; n1 <- length(var11);
+   # var12 <- var1[var2 == name_groups[2]]; n2 <- length(var12); 
+   # Dat <- data.frame(value = c(var11, var12), Groups = rep(name_groups, c(n1, n2)))
     x <- subset(Dat, Groups == name_groups[1], select = value) %>% unlist %>% setNames(NULL)
     y <- subset(Dat, Groups == name_groups[2], select = value) %>% unlist %>% setNames(NULL)
     Method <- ifelse(Test_Method == "N", "Non-Inferiority", "Superiority")
