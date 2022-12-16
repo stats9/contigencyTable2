@@ -2003,12 +2003,6 @@ Name_groups = c(group1 = "standard", group2 = "new"), data_list = NA){
     dl_al <- get_delta(margin)
     alter <- dl_al[1]; delta <- dl_al[2] %>% as.numeric;
     LOWER <- ifelse(alter == "greater", FALSE, TRUE)
-    name_groups <- Dat[, 2] %>% unlist %>% unique %>% as.character
-    if(name_groups %>% length != 2) stop("group factor must be two groups")
-    if(dataType == "binary" && is.na(data_list)){
-    val <- Dat[, 1] %>% unlist %>% as.numeric
-    if(setdiff(val, c(0, 1)) %>% length != 0) stop("for binary data, just accepted TRUE or 1 for (succeed) and FALSE or 0 for (fail)")
-    }
 
     ############################################# edit function ###################################################
     
@@ -2042,7 +2036,12 @@ Name_groups = c(group1 = "standard", group2 = "new"), data_list = NA){
 
 Dat <- get_data1(x = Dat, y = data_list)
 
-
+name_groups <- Dat[, 2] %>% unlist %>% unique %>% as.character
+if(name_groups %>% length != 2) stop("group factor must be two groups")
+    if(dataType == "binary" && is.na(data_list)){
+    val <- Dat[, 1] %>% unlist %>% as.numeric
+    if(setdiff(val, c(0, 1)) %>% length != 0) stop("for binary data, just accepted TRUE or 1 for (succeed) and FALSE or 0 for (fail)")
+    }
 
     ######################################## finish edit #########################################################
    # var1 <- Dat[, 1] %>% unlist
