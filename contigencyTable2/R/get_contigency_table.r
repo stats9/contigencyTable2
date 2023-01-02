@@ -2019,7 +2019,7 @@ Name_groups = c(group1 = "standard", group2 = "new"), data_list = NA){
         var12 <- v1[v2 == Name_groups[2]]; n2 <- length(var12); 
         Dat <- data.frame(value = c(var11, var12), Groups = rep(Name_groups, c(n1, n2)))
         }else{
-            if(is.na(x) && dataType != "binary"){
+            if(any(is.na(x)) && dataType != "binary"){
                 x <- y[[1]]; y2 <- y[[2]]
                 n1 <- length(x); n2 <- length(y2);
                 v1 <- c(x, y2); v2 <- rep(Name_groups, c(n1, n2))
