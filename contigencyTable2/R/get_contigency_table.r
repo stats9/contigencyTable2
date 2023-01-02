@@ -1991,6 +1991,8 @@ Method_estimate_for_binary_data = "fm",
 margin, reff = 1, better = "right", Test_Method = "N", 
 Name_groups = c(group1 = "standard", group2 = "new"), data_list = NA){
 
+    ## start function #####################################
+
     conf.low <- xmax <- samp_diff <- conf.high <- value <- group <- Groups <- xmin <- . <- NULL
     get_delta <- function(margin){
         a <- margin; alter <- "greater"
@@ -2003,19 +2005,17 @@ Name_groups = c(group1 = "standard", group2 = "new"), data_list = NA){
     dl_al <- get_delta(margin)
     alter <- dl_al[1]; delta <- dl_al[2] %>% as.numeric;
     LOWER <- ifelse(alter == "greater", FALSE, TRUE)
-
-    ############################################# edit function ###################################################
     
     get_data1 <- function(x = Dat, y = data_list){
-        if(!is.na(x)){
+        if(!any(is.na(x))){
         var1 <- Dat[, 1] %>% unlist
         var2 <- Dat[, 2] %>% unlist
         temp1 <- (is.factor(var1) || is.character(var1)); temp2 <- (is.factor(var2) || is.character(var2));
         if((temp1 + temp2) != 1) stop("Dat is not valid, go to help function and insert valid data or use 
         data_list argument for more information about valid data go to help function")
         v1 <- ifel(1 * temp1 == 0, var1, var2)
-        v2 <- ifel(1 * temp2 == 0, var2, var1)
-        var11 <- v1[v1 == Name_groups[1]]; n1 <- length(var11);
+        v2 <- ifel(1 * temp1 == 0, var2, var1)
+        var11 <- v1[v2 == Name_groups[1]]; n1 <- length(var11);
         var12 <- v1[v2 == Name_groups[2]]; n2 <- length(var12); 
         Dat <- data.frame(value = c(var11, var12), Groups = rep(Name_groups, c(n1, n2)))
         }else{
@@ -2043,12 +2043,7 @@ if(name_groups %>% length != 2) stop("group factor must be two groups")
     if(setdiff(val, c(0, 1)) %>% length != 0) stop("for binary data, just accepted TRUE or 1 for (succeed) and FALSE or 0 for (fail)")
     }
 
-    ######################################## finish edit #########################################################
-   # var1 <- Dat[, 1] %>% unlist
-   # var2 <- Dat[, 2] %>% unlist
-   # var11 <- var1[var2 == name_groups[1]]; n1 <- length(var11);
-   # var12 <- var1[var2 == name_groups[2]]; n2 <- length(var12); 
-   # Dat <- data.frame(value = c(var11, var12), Groups = rep(name_groups, c(n1, n2)))
+
     x <- subset(Dat, Groups == name_groups[1], select = value) %>% unlist %>% setNames(NULL)
     y <- subset(Dat, Groups == name_groups[2], select = value) %>% unlist %>% setNames(NULL)
     Method <- ifelse(Test_Method == "N", "Non-Inferiority", "Superiority")
